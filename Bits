@@ -1,0 +1,99 @@
+01 - Bit Manipulation
+Binary Conversion
+void convertToBinary(int n)
+{
+    if (n <= 1)
+    {
+        cout << n;
+        return;
+    }
+    convertToBinary(n >> 1);
+    cout << (n & 1);
+}
+
+Time: O(log n)
+
+Check Odd / Even
+bool isEven(int n)
+{
+    return (n & 1) == 0;
+}
+
+Time: O(1)
+
+Count Number of Ones
+Method 1
+int countOnes(int n)
+{
+    int cnt = 0;
+    while (n)
+    {
+        cnt += (n & 1);
+        n >>= 1;
+    }
+    return cnt;
+}
+
+Time: O(log n)
+
+Method 2 (Brian Kernighan)
+int countOnes(int n)
+{
+    int cnt = 0;
+    while (n)
+    {
+        cnt++;
+        n &= (n - 1);
+    }
+    return cnt;
+}
+
+Time: O(number of set bits)
+
+Get Bit
+int getBit(int num, int idx)
+{
+    return (num >> idx) & 1;
+}
+
+Time: O(1)
+
+Set Bit
+int setBit(int num, int idx)
+{
+    return num | (1LL << idx);
+}
+
+Time: O(1)
+
+Clear Bit
+int clearBit(int num, int idx)
+{
+    return num & ~(1LL << idx);
+}
+
+Time: O(1)
+
+Flip Bit
+int flipBit(int num, int idx)
+{
+    return num ^ (1LL << idx);
+}
+
+Time: O(1)
+
+First Set Bit Value
+int firstOneBitValue(int num)
+{
+    return num & (-num);
+}
+
+Time: O(1)
+
+Check Power of Two
+bool isPowerOfTwo(int num)
+{
+    return num && !(num & (num - 1));
+}
+
+Time: O(1)
