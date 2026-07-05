@@ -1,0 +1,50 @@
+Bitmask
+Iterate Over All Masks
+for (int mask = 0; mask < (1 << n); mask++)
+{
+    for(int i =0 ; i<n ; i++)
+    {
+    }
+}
+
+Number of Masks = 2^n
+
+Check if Bit Exists
+if (mask & (1LL << i))
+{
+}
+
+Time: O(1)
+
+Turn On Bit
+mask |= (1LL << i);
+
+Time: O(1)
+
+Turn Off Bit
+mask &= ~(1LL << i);
+
+Time: O(1)
+
+Toggle Bit
+mask ^= (1LL << i);
+
+Time: O(1)
+
+Iterate Over Elements Inside Mask
+for (int i = 0; i < n; i++)
+{
+    if (mask & (1LL << i))
+    {
+        // i exists
+    }
+}
+
+Time: O(n)
+
+Enumerate All Submasks ⭐
+for (int sub = mask; sub; sub = (sub - 1) & mask)
+{
+}
+
+Time: O(2^k) where k = number of set bits in mask
