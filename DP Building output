@@ -1,0 +1,30 @@
+DP Building Output
+
+Goal:
+Reconstruct one optimal solution after computing DP.
+
+Methods:
+
+1. Parent Array
+   - Store previous state.
+   - parent[cur] = prev.
+   - Backtrack from answer to base.
+
+2. DP Backtracking
+   - Compare current DP value with possible transitions.
+   - Follow the transition that produced the current value.
+
+Steps:
+1. Compute DP.
+2. Find final state.
+3. Trace back.
+4. Reverse output if needed.
+
+Common Problems:
+- LIS
+- LCS
+- Knapsack
+- Edit Distance
+- Grid Path
+- DAG Path
+- Coin Change
