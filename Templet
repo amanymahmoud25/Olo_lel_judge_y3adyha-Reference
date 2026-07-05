@@ -1,0 +1,53 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include<bits/stdc++.h>
+#include<unordered_map>
+#define endl "\n"
+#define Ceil(x,y) ((x+y-1)/y)
+#define clr(arr, x) memset(arr, x, sizeof arr)
+#define all(v) v.begin(),v.end()
+#define allr(s) s.rbegin(),s.rend()
+#define watch(x) cout<<(#x)<<" = "<<x<<endl
+#define sz(s)	(int)(s.size())
+ #define int long long
+const int mod = 1e9 + 7;
+typedef long long ll;
+const int inf = 1e18+1000000;
+using namespace std;
+typedef long double ld;
+typedef unsigned long long ull;
+int dx[]{ -1, 0, 1, 0,  -1, 1, 1, -1 };
+int dy[]{  0, 1, 0,-1,   1, 1,-1, -1 };
+void file() {
+#ifndef ONLINE_JUDGE
+    freopen("input.txt", "r", stdin);
+    freopen("output.txt", "w", stdout);
+#endif
+}
+
+void fast() {
+    ios::sync_with_stdio(0);
+    cin.tie(0);
+    cout.tie(0);
+
+}
+
+void solve() {
+
+
+}
+
+
+
+
+
+int32_t main() {
+
+
+    file();
+    fast();
+    int t = 1;
+    // cin >> t;
+    for (int i = 1; i <= t; i++) {
+        solve();
+    }
+}
