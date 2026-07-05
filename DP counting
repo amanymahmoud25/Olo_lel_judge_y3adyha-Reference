@@ -1,0 +1,33 @@
+Counting DP
+
+State:
+dp[state] = Number of ways to reach/build this state.
+
+Transition:
+dp[cur] += dp[prev]
+
+Base Case:
+Usually:
+dp[start] = 1
+
+Answer:
+dp[target]
+
+Common Transitions:
+- Grid:
+  dp[i][j] = dp[i-1][j] + dp[i][j-1]
+
+- DAG:
+  dp[v] += dp[u]
+
+- Stairs:
+  dp[i] = dp[i-1] + dp[i-2]
+
+Optimization:
+max / min
+
+Boolean:
+OR
+
+Counting:
+SUM
