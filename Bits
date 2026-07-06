@@ -97,3 +97,19 @@ bool isPowerOfTwo(int num)
 }
 
 Time: O(1)
+
+Rightmost Set Bit (LSB)
+int n = 18; // Binary: 10010 , n > 0
+int index = __builtin_ctz(n); // returns 1
+int index = __builtin_ctzll(n); // When n is Long long
+int index = log2(n & -n);
+
+Time: O(1)
+
+Leftmost Set Bit (MSB)
+int n = 18; // Binary: 00...10010 , n > 0
+int index = 31 - __builtin_clz(n); // returns 4 (for a 32-bit int)
+int index = floor(log2(n)); 
+int index = 63 - __builtin_clzll(n); // When n is Long Long
+
+Time: O(1)
