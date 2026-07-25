@@ -1,0 +1,48 @@
+Floor Sum / Divisor Block Decomposition
+
+Core Concept
+The value of N / x (floor division) takes at most 2 * sqrt(N) distinct values for x from 1 to N.
+We group values of x that give the same quotient 'val' into contiguous blocks [l, r], where r = N / val.
+
+Time Complexity: O(sqrt(N))
+
+Space Complexity: O(1)
+
+Code Templates
+
+Template A: Counting Divisors Sum (e.g., A * B + C = N)
+
+ll count_divisors_sum(ll n) {
+        int cur=1 , res=0;
+        while (cur<=n) {
+            int val = n/cur ;
+            res+= val *(n/val+1-cur);
+            cur=n/val+1;
+        }
+return res;
+}
+
+Template B: Sum of Divisor Values (e.g., Sum of sigma(i))
+
+long long sum_of_divisors(long long n) {
+long long cur = 1, res = 0;
+while (cur <= n) {
+long long val = n / cur;
+long long r = n / val;
+
+    long long sum_lr = (cur + r) * (r - cur + 1) / 2; // AP sum
+    res += val * sum_lr;
+    cur = r + 1;
+}
+return res;
+}
+
+Applications
+
+Equation Problems: Reducible to A * B <= N or A * B + C = N.
+
+Divisor Functions: Computing sum of all divisors of all numbers from 1 to n.
+
+3-Variable Equations (A * B * C <= N): Loop A up to N^(1/3), then use O(sqrt(N/A)) block decomposition.
+
+Mobius Inversion / Coprime Counting: Optimizing sum(mu(i) * f(N/i)).
