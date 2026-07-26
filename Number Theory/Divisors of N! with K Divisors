@@ -1,0 +1,127 @@
+ Reference: Finding Divisors of N! with K Divisors via DP
+1. Fundamental Mathematical Principle (Number Theory)
+Prime Factorization: Any positive integer X can be expressed as:
+X = (p1^e1) * (p2^e2) * ... * (pm^em)
+
+Divisor Count Function: The total number of divisors of X, denoted as tau(X), is given by:
+tau(X) = (e1 + 1) * (e2 + 1) * ... * (em + 1)
+
+2. Why Use (i + 1) in the Code?
+Available Choices: If a prime factor p has a maximum exponent of e in N!, the valid exponents we can choose for a divisor are i in {0, 1, 2, ..., e}.
+
+Number of Options: The total count of possible exponents is (i + 1). Note that choosing exponent 0 means the prime factor is not used.
+
+Multiplicative Contribution: Choosing an exponent i multiplies the total divisor count by a factor of (i + 1).
+
+3. Why Divide in Recursion (Top-Down Approach)?
+Breaking Down the Goal: The objective is to form a total divisor count equal to K.
+
+Tracking the Remaining Target: When choosing an exponent i, we verify that its factor divides the remaining target using: (rem_k % (i + 1) == 0).
+
+State Transition: We then transition to the next state by dividing:
+rem_k_next = rem_k_current / (i + 1)
+
+Base Case (Success State): Fully satisfying the divisor requirement yields (rem_k == 1) after processing all prime factors.
+
+code :
+
+    #define _CRT_SECURE_NO_WARNINGS
+    #include<bits/stdc++.h>
+    #include<unordered_map>
+    #define endl "\n"
+    #define Ceil(x,y) ((x+y-1)/y)
+    #define clr(arr, x) memset(arr, x, sizeof arr)
+    #define all(v) v.begin(),v.end()
+    #define allr(s) s.rbegin(),s.rend()
+    #define watch(x) cout<<(#x)<<" = "<<x<<endl
+    #define int  long long
+    #define sz(s)	(int)(s.size())
+    //const int mod = 1e9 + 7;
+    typedef long long ll;
+
+    typedef long double ld;
+    const int inf = 1e18+1000000;
+    using namespace std;
+    typedef long double ld;
+    typedef unsigned long long ull;
+    int dx[]{ -1, 0, 1, 0,  -1, 1, 1, -1 };
+    int dy[]{  0, 1, 0,-1,   1, 1,-1, -1 };
+    vector<pair<int,int>>dr = {
+        {0,1},{0,-1},{1,0},{-1,0},{1,1},{-1,-1},{-1,1},{1,-1}
+    };
+ld PI = acos(-1.0) ;
+    void file() {
+    #ifndef ONLINE_JUDGE
+        freopen("input.txt", "r", stdin);
+        freopen("output.txt", "w", stdout);
+    #endif
+    }
+
+    void fast() {
+        ios::sync_with_stdio(0);
+        cin.tie(0);
+        cout.tie(0);
+
+    }
+vector<int>divs ;
+vector<vector<int>>dp ;
+void primes (int n ) {
+        for (int i = 2; i * i <= n; i++)
+        {
+            int c = 0;
+            while (n % i == 0)
+            {
+                c++; n /= i;
+            }
+           divs[i]+=c ;
+        }
+        if (n >1)
+           divs[n]++;
+
+    }
+int n ,k ;
+int fun (int indx , int sum) {
+    if (indx==n+1) {
+        return  (sum==1) ;
+    }
+    if (divs[indx]==0) return fun(indx+1,sum) ;
+    int &ret  = dp[indx][sum] ;
+    if (~ret) return ret ;
+
+    int res =0;
+
+    for (int i =0 ; i<=divs[indx] ;i++) {
+        if (sum%(i+1)==0)
+            res+= fun (indx+1,sum/(i+1));
+        res %= 998244353 ;
+    }
+    return ret = res ;
+}
+
+void fly()
+{
+    cin >>n >> k;
+        divs.assign (n+1,0) ;
+        for (int i =1 ; i<=n ; i++) {
+          primes(i);
+        }
+ //   for (int i :divs) cout <<i << endl;
+
+    dp.assign(2000,vector<int>(2000,-1)) ;
+
+    cout << fun(1,k)<<endl ;
+
+
+}
+
+    int32_t main() {
+
+
+        file();
+        fast();
+        int t = 1;
+     //  cin >> t;
+        for (int tc = 1; tc <= t; tc++) {
+            fly();
+        }
+    }
