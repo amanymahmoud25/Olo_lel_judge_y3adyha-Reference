@@ -1,0 +1,107 @@
+*** Two Pointer with Variable Size
+
+
+ans = min(ans, r - l + 1);   // أصغر طول
+ans = max(ans, r - l + 1);   // أكبر طول
+ans = max(ans, sum);         // أكبر Sum
+void twoPointer(){
+    ll l = 0, r = 0, sum = 0, ans = 0;
+    auto isValidWindow = [&](){
+        return (1);
+    };
+    auto add = [&](int i){
+        sum += a[i];
+    };
+    auto del = [&](int i){
+        sum -= a[i];
+    };
+    while (r < n){
+        add(r);
+        while (!isValidWindow()){
+            del(l++);
+        }
+        // Process Window
+        ans = max(ans, r - l + 1);
+        r++;
+    }
+}
+
+-------------------------------------------------------------------------
+
+*** Two Pointer with Fixed Window
+
+
+void fixedWindow(){
+
+    int l = 0, r = 0;
+    ll sum = 0;
+    int k;
+
+    auto add = [&](int i){
+        sum += a[i];
+    };
+
+    auto del = [&](int i){
+        sum -= a[i];
+    };
+
+    // أول Window
+    while (r < k){
+        add(r);
+        r++;
+    }
+
+    // Process First Window
+
+    while (r < n){
+
+        add(r);
+        del(l);
+
+        l++;
+        r++;
+
+        // Process Current Window
+
+    }
+}
+
+
+-------------------------------------------------------------------------
+
+*** أقل Window تحقق شرط (Minimum Window)
+
+
+دي مختلفة شوية لأننا بنصغر الويندو وهي  Valid.
+void minimumWindow(){
+
+    int l = 0, r = 0;
+    ll sum = 0;
+    int ans = INF;
+
+    auto isValidWindow = [&](){
+        return (1);
+    };
+
+    auto add = [&](int i){
+        sum += a[i];
+    };
+
+    auto del = [&](int i){
+        sum -= a[i];
+    };
+
+    while (r < n){
+
+        add(r);
+
+        while (isValidWindow()){
+
+            ans = min(ans, r - l + 1);
+
+            del(l++);
+        }
+
+        r++;
+    }
+}
