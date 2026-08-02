@@ -1,0 +1,21 @@
+// O(n*m)
+
+int n ,m ;
+string s ,t ;
+vector<vector<int>>dp ;
+int lcsRec(int i , int j ) {
+   if (i==-1 || j ==-1) return 0 ;
+
+
+   if (dp[i][j]!=-1) return dp[i][j];
+
+
+   if (s[i]==t[j]) {
+       return dp[i][j]= 1 +lcsRec(i-1,j-1);
+   }
+
+
+
+
+   return dp[i][j]=max(lcsRec(i-1,j) , lcsRec(i,j-1)) ;
+}
