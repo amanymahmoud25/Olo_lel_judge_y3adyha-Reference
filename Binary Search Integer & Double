@@ -1,0 +1,43 @@
+** Binary Search Integers
+
+ll l=0,r=1e9, md,ans=0;
+
+auto valid=[&](ll md){
+
+    return (condition);
+};
+while(l<=r){
+    //cout<<md<<endl;
+    md=l+(r-l)/2;
+    if(valid(md)){
+        ans=max(md,ans);
+        l=md+1;
+
+    }
+    else r=md-1;
+}
+cout<< ans<<endl;
+
+-------------------------------------------------------------------------
+
+** Binary Search Double
+
+
+dd l=0,r=mx, md,ans=0;
+
+auto valid=[&](dd md){
+
+    return (condition);
+};
+while(r-l>=1e-7){
+    //cout<<md<<endl;
+    md=l+(r-l)/2;
+    if(valid(md)){
+        ans=max(md,ans);
+        l=md;
+
+    }
+    else r=md;
+}
+cout<<fixed<<setprecision(9)<<ans<<endl;
+
