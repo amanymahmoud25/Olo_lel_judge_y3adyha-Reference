@@ -1,4 +1,4 @@
-*** Kadane's Algorithm
+** Kadane's Algorithm
 
 Find Min / max subarray     O(n^2)   optimize to    O(n)
 
