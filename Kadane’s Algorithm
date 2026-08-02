@@ -1,0 +1,15 @@
+
+
+// Kadane’s Algorithm: Finds the maximum sum of any contiguous subarray in // an array in O(n) by tracking the best current sum and overall maximum 
+
+
+
+
+ll kadane (vector<int>&v) {
+       int cursum = v[0] , bestsum =v[0];
+       for (int i =1 ; i<sz(v) ; i++) {
+           cursum = max(cursum + v[i] , v[i] ) ;
+           bestsum = max (bestsum , cursum) ;
+       }
+       return bestsum ;
+   }
