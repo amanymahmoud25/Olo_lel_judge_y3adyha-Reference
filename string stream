@@ -1,0 +1,24 @@
+
+stringstream
+
+- Used to treat a string as an input/output stream.
+- Converts strings to numbers and vice versa.
+- Splits a string into tokens separated by whitespace.
+- Works similarly to cin and cout but on strings.
+
+Common uses:
+1. Parse a line containing multiple values.
+2. Convert string -> int/double.
+3. Build a formatted string.
+
+Example:
+string s = "10 20 30";
+stringstream ss(s);
+
+int x;
+while (ss >> x)
+{
+    // Reads: 10, 20, 30
+}
+
+
