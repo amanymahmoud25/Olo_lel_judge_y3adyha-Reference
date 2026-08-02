@@ -1,0 +1,19 @@
+*** Integer Partitions (Coin Change Pattern)
+
+
+Time: O(N²) Space: O(N)
+Calculate dp[i] = Number of ways to form sum i.
+// Count Ways:
+ Order Doesn't Matter
+//      for(piece)
+//          for(sum)
+ Order Matters
+//      for(sum)
+//          for(piece)
+
+code:-
+
+dp[0] = 1
+ for(piece = 1 -> N)
+     for(sum = piece -> N)
+         dp[sum] += dp[sum-piece];
