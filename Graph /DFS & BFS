@@ -1,0 +1,32 @@
+void dfs(int node) {
+   // O(n+m)
+   vis[node]=1 ;
+
+
+   for (int v :adj[node]) {
+       if (vis[v]) continue;
+       dfs(v) ;
+   }
+}
+
+
+void bfs() {
+   if (q.empty())
+       return ;
+
+
+       int u = q.front() ;
+       q.pop() ;
+       cout << u << ' ' ;
+
+
+       for (int v:adj[u]) {
+           if (visited[v]==0) {
+               visited[v]=1 ;
+               q.push(v) ;
+           }
+       }
+               bfs() ;
+
+
+}
