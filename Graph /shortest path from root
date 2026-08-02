@@ -1,0 +1,74 @@
+
+
+int n ,m ;
+vector<int>visited;
+vector<int>dist ;
+vector<vector<int>>adj ;
+queue<int>q ;
+void bfs() {
+   if (q.empty())
+       return ;
+
+
+       int u = q.front() ;
+       q.pop() ;
+       cout << u << ' ' ;
+
+
+       for (int v:adj[u]) {
+           if (visited[v]==0) {
+               dist[v]=dist[u]+1;
+               visited[v]=1 ;
+               q.push(v) ;
+           }
+       }
+               bfs() ;
+
+
+}
+void solve() {
+
+
+   cin >>n >>m ;
+   visited.assign(n+1,0) ;
+   dist.assign(n+1,0) ;
+
+
+   adj.assign(n+1 , vector<int>()) ;
+
+
+   for (int i =0 ; i<m ; i++) {
+       int x,y ; cin >>x >>y ;
+       adj[x].push_back(y) ;
+       adj[y].push_back(x) ;
+   }
+   visited[1]=1 ;
+   q.push(1) ;
+   bfs() ;
+
+
+   for (int i :dist) cout << i << endl;
+}
+
+
+int32_t main() {
+   /*
+           Do What You Are Afraid To Do!
+   */
+
+
+
+
+
+
+   file();
+   fast();
+   int t = 1;
+
+
+   // cin >> t;
+   for (int i = 1; i <= t; i++) {
+       solve();
+   }
+}
+
