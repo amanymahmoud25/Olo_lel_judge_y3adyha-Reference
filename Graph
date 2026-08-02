@@ -1,0 +1,198 @@
+** DFS (Recursive)
+
+
+N=nodes , m= Vertices    O(n+m)
+	اللون 0 (أبيض): العقدة لم تُزر بعد.
+	اللون 1 (رمادي): دخلنا العقدة ونستكشف جيرانها (لم ننتهِ منها).
+	اللون 2 (أسود): انتهينا من العقدة ومن جميع جيرانها وخرجنا منها.
+	كما نسجل وقت الدخول time_in ووقت الخروج time_out
+void dfs(int v) {
+    time_in[v] = dfs_timer++; // نسجل وقت الدخول
+    color[v] = 1; // نلونها بالرمادي (قيد الاستكشاف)
+    
+    for (int u : adj[v])
+        if (color[u] == 0) // لو الجار أبيض (لم يُزر)
+            dfs(u); // نتعمق فيه
+            
+    color[v] = 2; // بعد الانتهاء من كل الجيران، نلونها بالأسود (انتهت)
+    time_out[v] = dfs_timer++; // نسجل وقت الخروج
+}
+Node u Ancestor for v
+If time_in[u] < time_in[v] && time_out[u] > time_out[v]
+
+-------------------------------------------------------------------------
+
+** BFS (Breadth First Search) 
+
+
+N=nodes , m= Vertices    O(n+m)
+vector<vector<int>> adj;  // adjacency list representation
+int n; // number of nodes
+int s; // source vertex
+
+queue<int> q;  
+vector<bool> used(n);   
+vector<int> d(n), p(n);
+
+q.push(s);
+used[s] = true;
+p[s] = -1;
+while (!q.empty()) {
+    int v = q.front();
+    q.pop();
+    for (int u : adj[v]) {
+        if (!used[u]) {
+            used[u] = true;
+            q.push(u);
+            d[u] = d[v] + 1;
+            p[u] = v;
+        }
+    }
+}
+//shortest path from the source to some vertex  U;
+if (!used[u]) {
+    cout << "No path!";
+} else {
+    vector<int> path;
+    for (int v = u; v != -1; v = p[v])
+        path.push_back(v);
+    reverse(path.begin(), path.end());
+    cout << "Path: ";
+    for (int v : path)
+        cout << v << " ";
+}
+
+-------------------------------------------------------------------------
+
+ (Operation) |	Adjacency Matrix|	Adjacency List
+(Storage space)	O(N×N)	O(N+E)
+(Adding a node)	O(N×N)	O(1)
+(Adding an edge)	O(1)	O(1)
+(Removing a node)	O(N×N)	O(N+E)
+(Removing an edge)	O(1)	O(E)
+(Querying)	O(1)	O(N)
+-------------------------------------------------------------------------
+
+** Tree = Connected + No Cycles = N Nodes & N−1 Edges.
+
+-------------------------------------------------------------------------
+
+** Topological Sort  With BFS Kahn algorithm
+
+
+void TopologicalSort() {
+    int n, m; // n = عدد النودز، m = عدد الحواف (Edges)
+    cin >> n >> m;
+
+    vector<vector<int>> adj(n + 1); // الـ Adjacency List
+    vector<int> in_degree(n + 1, 0); // مصفوفة لحساب عدد الأسهم الداخلة لكل نود
+
+    // 1. بناء الجراف وحساب الـ in-degree
+    for (int i = 0; i < m; i++) {
+        int u, v;
+        cin >> u >> v;
+        adj[u].push_back(v); // سهم من u إلى v
+        in_degree[v]++;      // النود v دخلها سهم جديد
+    }
+
+    // 2. وضع النودز التي ليس لها أي شروط مسبقة (in_degree == 0) في الطابور
+    queue<int> q;
+    for (int i = 1; i <= n; i++) {
+        if (in_degree[i] == 0) {
+            q.push(i);
+        }
+    }
+
+    // 3. استخراج الترتيب التوبولوجي
+    vector<int> topo_order;
+    while (!q.empty()) {
+        int curr = q.front();
+        q.pop();
+        topo_order.push_back(curr);
+
+        // المرور على جيران النود الحالية وحذف السهم اللي بينهم
+        for (int neighbor : adj[curr]) {
+            in_degree[neighbor]--; // قللنا الـ in-degree بواحد لأننا خلصنا الأب
+            if (in_degree[neighbor] == 0) {
+                q.push(neighbor); // لو النود بقت جاهزة، ندخلها الطابور
+            }
+        }
+    }
+
+    // 4. التحقق من وجود Cycle (دورة مغلقة)
+    if (topo_order.size() != n) {
+        cout << "Cycle detected! Topological sort is not possible.\n";
+    } else {
+        // طباعة الترتيب
+        for (int node : topo_order) {
+            cout << node << " ";
+        }
+        cout << "\n";
+    }
+
+    return 0;
+}
+
+-------------------------------------------------------------------------
+
+
+** Diameter of a Tree (2 DFS)
+
+The longest path between any two nodes in the tree, whether it passes through the Root or not.
+// Idea: 1. DFS from any node -> farNode.  2. DFS from farNode -> Maximum distance = Diameter.
+// Property:The farthest node from any node is always one endpoint of the diameter.
+// Time: O(N) &&  Space: O(N)
+
+vector<vector<int>> adj;
+int mx, dist, farNode;
+void dfs(int node, int par){
+    for(auto child : adj[node]){
+        if(child == par) continue;
+        dist++;
+        if(dist > mx){
+            mx = dist;
+            farNode = child;
+        }
+        dfs(child, node);
+        dist--;      // Backtracking
+    }
+}
+// 1st DFS
+dist = 0; mx = 0; dfs(1, 0);
+// 2nd DFS
+dist = 0;  mx = 0; dfs(farNode, 0);
+cout << mx;
+
+-------------------------------------------------------------------------
+
+** BFS Standard
+
+
+// Visits nodes level by level.
+// Finds the shortest path in an unweighted graph.
+// Time: O(V + E)  Space: O(V)
+
+vector<vector<int>> adj;
+vector<bool> vis;
+queue<int> q;
+
+void bfs(int src){
+    vis.assign(adj.size(), false);
+
+    q.push(src);
+    vis[src] = true;
+
+    while(!q.empty()){
+        int node = q.front();
+        q.pop();
+
+        // Process node
+
+        for(auto child : adj[node]){
+            if(vis[child]) continue;
+
+            vis[child] = true;
+            q.push(child);
+        }
+    }
+}
