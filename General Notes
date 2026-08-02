@@ -1,0 +1,6 @@
+Taking mod to a negative number: 
+
+long long ans = (A - B + mod) % mod;
+
+*******************************************
+
