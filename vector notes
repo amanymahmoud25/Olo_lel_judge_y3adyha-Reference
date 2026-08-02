@@ -1,3 +1,20 @@
+*** Kadane's Algorithm
+
+Find Min / max subarray     O(n^2)   optimize to    O(n)
+
+int n;cin>>n;
+ll ans=LLONG_MIN, sum=0;
+for(int i=0;i<n;i++)
+{
+  11 x;cin>>x;
+  sum+=x;
+  ans=max(ans, sum) ;
+  sum=max(sum,0LL);
+}
+cout << ans;
+
+-------------------------------------------------------------------------
+
 *** Sort vector based on size
 
 sort(v.begin(), v.end(), [](const vector<ll>& a, const vector<ll>& b) { return a.size() > b.size(); // ترتيب تنازلي بناءً على الحجم });
