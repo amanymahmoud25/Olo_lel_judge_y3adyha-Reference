@@ -1,0 +1,9 @@
+*** Sort vector based on size
+
+sort(v.begin(), v.end(), [](const vector<ll>& a, const vector<ll>& b) { return a.size() > b.size(); // ترتيب تنازلي بناءً على الحجم });
+
+-------------------------------------------------------------------------
+
+*** sort by less Lexicographical
+
+sort(v.begin(), v.end()
