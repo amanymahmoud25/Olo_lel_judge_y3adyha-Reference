@@ -1,0 +1,11 @@
+void lis() {
+   temp.push_back(v[0]) ;
+   for (int i =1 ; i<n ; i++) {
+       if (v[i]>temp.back()) temp.push_back(v[i]);
+       else {
+           int indx =
+ lower_bound(all(temp) ,v[i] )-temp.begin();
+           temp[indx] = v[i] ;
+       }
+   }
+}
