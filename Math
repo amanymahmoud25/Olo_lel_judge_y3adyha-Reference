@@ -1,10 +1,8 @@
 **(Sieve) Primes 
 
-
-// Generates all primes from 2 to N
 // Time: O(N log(log N))
 // Space: O(N)
-	Idea: شطب مضاعفات كل عدد أولي للحصول على جميع الأعداد الأولية حتى N.
+
 vector<long long> primes;
 vector<long long> sieve(long long n){
 vector<bool> isPrime(n + 1, true);
@@ -33,8 +31,8 @@ for (int j= i*i; j <= n; j += i+i)
 // Time: O(sqrt(N))
 // Space: O(1)
 bool isPrime(long long n) {
-    if (n <= 2 || n%2==0 ) return false;// الأرقام الزوجيه مش برايم فبنمشي ع الفردي بس 
-    for (long long i = 3; i * i <= n; i+=2) { // هنا فكرة الجذر
+    if (n <= 2 || n%2==0 ) return false;
+    for (long long i = 3; i * i <= n; i+=2) {
         if (n % i == 0) return false;
     }
     return true;
@@ -43,9 +41,8 @@ bool isPrime(long long n) {
 -------------------------------------------------------------------------
 
 *** Divisors using √N
-// Get all divisors
 // Time: O(sqrt(N))
-	Idea:  كل قاسم i   يقابله القاسم n/i. لذلك نفحص حتى الجذر فقط  
+	
 vector<long long> divisors;
 
 for (long long i = 1; i * i <= n; i++) {
@@ -59,9 +56,7 @@ for (long long i = 1; i * i <= n; i++) {
 -------------------------------------------------------------------------
 
 ***  Perfect Square
-	Time: O(1) تقريبًا.
-	Idea: العدد المربع الكامل هو الذي يكون جذره عددًا صحيحًا السبب إن العامل الأوسط بيتكرر مرة واحدة.
-	ملحوظة مهمة: الأعداد ذات عدد فردي من القواسم هي فقط الـ Perfect Squares.
+	
 bool isPerfectSquare(long long n) {
     long long x = sqrt(n);
     return x * x == n;
@@ -103,7 +98,6 @@ ll fastPow (ll x, ll n) {
 
 
 // Computes: x + x² + ... + xⁿ (mod mod)
-// Technique: Divide & Conquer
 // Recurrence:
 //   Even: S(n) = S(n/2) * (1 + x^(n/2))
 //   Odd : S(n) = S(n-1) + x^n
@@ -124,15 +118,14 @@ return ans % mod;
 
 *** Prime Factorization
 
-// Prints prime factors with their powers
 // Time: O(√N)   to 10e12  sqrt=10e6 
-// Space: O(log N) (عدد العوامل الأولية المختلفة).
+// Space: O(log N) 
 
 vector<pair<int, int>> primeFact(int n) {
 vector<pair<int, int>> ret;
 for (auto& it : primes) {
 if (it * it > n) break;  
-if (n < sz(isPrime) - 1 && isPrime[n]) break;   // لو وصلت لرقم برايم
+if (n < sz(isPrime) - 1 && isPrime[n]) break;
 int cnt = 0;
 while (n % it == 0) {
 cnt++;
@@ -180,19 +173,24 @@ ll numberOfDivisors(ll n) {
 
 *** Smallest Prime Factor
 
+
 // Calculating (SPF)for every number till MAXN.
-// Using for Prime Fctorization in log(n) instead of sqrt(n).
-// stores smallest prime factor for every number.if the number is prime ,mark.all its multiples who haven’t gotten their spf yet.
-// Time: O(N log log N)
+// Time: O(N log log N)    to 1e7
 
 #define MAXN 100001
-vector<int> spf(MAXN + 1, 1);
+vector<int> spf(MAXN + 1);
+
 void SPF() {
-    spf[0] = 0;
-    for (int i = 2; i <= MAXN; i++) {
-        if (spf[i] == 1) {
-            for (int j = i; j <= MAXN; j += i) {
-                if (spf[j]== 1) spf[j] = i;
+    for (int i = 1; i <= MAXN; i++) {
+        spf[i] = i;
+    }
+
+    for (int i = 2; i * i <= MAXN; i++) {
+        if (spf[i] == i) {
+            for (int j = i * i; j <= MAXN; j += i) {
+                if (spf[j] == j) {
+                    spf[j] = i;
+                }
             }
         }
     }
@@ -224,23 +222,9 @@ Fast Prime Factorization (SPF) - Use when Queries <= 1e6 and N <= 1e7
 
 -------------------------------------------------------------------------
 
-*** gcd recursion
-
-// Computes Greatest Common Divisor (GCD)
-// GCD = Minimum exponent لكل Prime factorization for two numbers. 
-// Technique: Euclidean Algorithm
-// Recurrence: gcd(a,b) = gcd(b, a % b)
-// Base Case: gcd(a,0) → return a
-// Time: O(log(min(a,b)))
-// Space: O(log(min(a,b))) (Recursion)
-int gcd(int a, int b) {
-if (b == 0) return a;
-return gcd(b, a % b);
-
--------------------------------------------------------------------------
-
 *** gcd iterative (better memory)
-// Space: O(1)
+
+
 ll gcd(ll a, ll b) {
     while (b) {
         a %= b;
@@ -253,13 +237,6 @@ ll gcd(ll a, ll b) {
 
 *** Lcm
 
-// Computes Least Common Multiple (LCM)
-// LCM = Maximum exponent لكل Prime factorization for two numbers. 
-// Time: O(logN) (يعتمد على gcd)
-// Space: O(1) (إذا كانت gcd Iterative)
-// If (a / gcd(a,b) * b) still overflows (numbers are very large)  compute LCM using Prime Factorization by taking the maximum exponent of each prime instead of multiplying directly.
-•gcd,lcm  الاثنان مبنيان على فكرة الـ Prime Factorization.
-// العنصر ومضاعفاته هيدي العنصر نفسه == فلو عايزه اصغر ل س م هجيب اصغرعنصر والعنصر مضروب في 2
 
 ll gcd(ll a, ll b) {
     while (b) {
@@ -276,14 +253,8 @@ ll lcm(ll a, ll b) {
 
 *** Modular Multiplicative Inverse (MMI)
 
-// لازم لو في ارقام معمولها موديلس وهعملها قسمه استخدم القانون دا 
-//  فنبدل عملية القسمة لضرب ونأتي برقم صحيح يعادل المقسوم عليه الفكرة: لأن الموديلس لا يتوزع ع القسمه
-// Condition: mod is Prime & (B % mod != 0)
-// Fermat's Little Theorem:
-//      B^-1 = B^(mod - 2) % mod
-// Division under Mod:
-//      A / B % mod = (A * B^-1) % mod
-// Time: O(log(mod)) (Binary Exponentiation)
+
+// Time: O(log(mod))
 
 ll fastPow (ll x, ll n) {
 
@@ -309,24 +280,22 @@ ll modDivide(ll a, ll b) {
 
 *** Modular Subtraction  
 
-توزيع الموديلس علي الطرح //
 // (a - b) % mod = ((a % mod - b % mod + mod) % mod)
 
 -------------------------------------------------------------------------
 
 *** Modelus %
 
-Negative nums 
-((N % K) + K) % K
+Negative nums ==> ((N % K) + K) % K
 
 -------------------------------------------------------------------------
 
-*** Permutations nPr (الترتيب مهم) ▭(P(n,r)=n!/((n-r)!))
+*** Permutations nPr 
 
-ترتيب كل العناصر r=n  ▭n!
 // nPr = n! / (n-r)!
 // Time: O(n)
 // Space: O(1)
+
 ll nPr(ll n, ll r) {
     if (r > n) return 0;
     return fact(n) / fact(n - r);
@@ -334,7 +303,16 @@ ll nPr(ll n, ll r) {
 
 -------------------------------------------------------------------------
 
-*** Combinations nCr (الترتيب غير مهم) ▭(C(n,r)=n!/(r!(n-r)!))
+*** Permutations with Repetition
+
+// الفكرة: ترتيب n عناصر مع وجود عناصر متطابقة.
+// If frequencies are c1, c2, ..., ck:
+//      Answer = n! / (c1! * c2! * ... * ck!)
+// Time: O(k)
+
+-------------------------------------------------------------------------
+
+*** Combinations nCr 
 
 if r is known simplified to n*n-1*… n-r+1  / !r
 // nCr = n! / (r!(n-r)!)
@@ -348,32 +326,11 @@ ll nCr(ll n, ll r) {
 
 -------------------------------------------------------------------------
 
-*** Factorial
+*** Faster nCr
 
-ll fact(ll n) {
-    ll res = 1;
-    for (ll i = 2; i <= n; i++)
-        res *= i;
-    return res;
-}
--------------------------------------------------------------------------
 
-*** Permutations with Repetition
-
-// الفكرة: ترتيب n عناصر مع وجود عناصر متطابقة.
-// If frequencies are c1, c2, ..., ck:
-//      Answer = n! / (c1! * c2! * ... * ck!)
-// Time: O(k) بعد حساب الـ Factorials
-
--------------------------------------------------------------------------
-
-*** Faster nCr 
-
-// لو الناتج مش هيتخطي لونج لونج غير كدا هيدي اوفرفلو
+==>but must not exceeds longlong
 // Time: O(r)   66C33  اقصي قيمه ممكن تتدخل
-// Computes nCr without calculating 3 Factorials.
-// الفكرة: نحسب البسط والمقام تدريجيًا (نضرب ثم نقسم في كل خطوة)
-// لتجنب حساب Factorials الكبيرة.
 // Space: O(1)
 
 
@@ -393,16 +350,19 @@ ll nCr(ll n, ll r) {
 
 -------------------------------------------------------------------------
 
+*** Factorial
+
+ll fact(ll n) {
+    ll res = 1;
+    for (ll i = 2; i <= n; i++)
+        res *= i;
+    return res;
+}
+
+-------------------------------------------------------------------------
+
 *** Pascal Triangle ▭(C(n,r)=C(n-1,r)+C(n-1,r-1)) 
- بناء جميع قيم nCrتدريجيًا بحيث كل قيمة تساوي مجموع القيمتين اللتين فوقها . 
-حساب قيم الـ  Combination باستخدام النتائج السابقة بدلًا من حسابها من الصفر. 
-تقسيم المسألة إلى حالتين (العنصر موجود أو غير موجود) ثم جمع عدد الطرق. 
- يبني جدول nCrاعتمادًا على القيم السابقة  (DP).
-n=0 :        1        → 1  = 2^0
-n=1 :      1   1      → 2  = 2^1
-n=2 :    1   2   1    → 4  = 2^2
-n=3 :  1   3   3   1  → 8  = 2^3
-n=4 :1  4   6   4  1  → 16 = 2^4
+ 
 // Precompute all C(n,r)
 // Time: O(N²)
 // Space: O(N²)
@@ -428,9 +388,8 @@ cout << C[n][r];
 
 D² = (x₂ - x₁)² + (y₂ - y₁)²
 Right Triangle (Using Distances)
-// الفكرة: احسب مربعات الأضلاع ورتبها ثم طبق فيثاغورس.
 // Condition:
-//      All sides > 0   لتجنب Degenerate Triangle (ضلع طوله صفر).
+//      All sides > 0  AVOID Degenerate Triangle 
 //      a² + b² == c²
 
 ll dist2(ll x1, ll y1, ll x2, ll y2) {
@@ -479,11 +438,8 @@ if (dot(bax, bay, bcx, bcy) == 0)
 *** triangle or segment or impossible 
 // Triangle Inequality must satisfy ALL inequalities:  a+b>c && a+c>b && b+c>a
 // Degenerate Triangle (Segment) if one side equals the sum of the other two:  a+b==c || a+c==b || b+c==a
-// Trick: Sort the lengths first. Then only check consecutive triples instead of trying all permutations.
-// Valid Side Lengths  Triangle/Segment requires all sides > 0.
-// Triangle: Sum of any two sides > third side.
-// Segment: Sum of two sides == third side.
 // Impossible: Sum of two sides < third side.
+
 bool triangle(ll a, ll b, ll c) {
     if (a <= 0 || b <= 0 || c <= 0)
         return false;
@@ -504,18 +460,13 @@ bool impossible(ll a, ll b, ll c) {
 
 -------------------------------------------------------------------------
 
-*** Rule of Sum (Addition Rule)   ▭(A+B)
-
-إذا كانت الحالات متنافية (Mutually Exclusive)  لا يمكن اختيار الاثنين معًا.
-Rule of Product (Multiplication Rule)  : ▭(A×B)
-إذا كانت الاختيارات مستقلة ومتتالية
 Inclusion–Exclusion
 لعاملين: ▭(∣A∪B∣=∣A∣+∣B∣-∣A∩B∣)
 لثلاث مجموعات: ∣A∣+∣B∣+∣C∣-∣AB∣-∣AC∣-∣BC∣+∣ABC∣
 Binomial Coefficient   ▭(C(n,r)=C(n,n-r))
-احتمال اني اخد س عنصر هي هي احتمال اني مخدش الكل ناقص س دول
-احتمال انه مخدش حاجه او اخدهم كلهم     ▭(C(n,0)=C(n,n)=1)
+
 Change of Base Formula log_5(x) = log(x) / log(5)
+
 Mod Result=((a (mod b))+b) (mod b)
 
 -------------------------------------------------------------------------
@@ -547,23 +498,6 @@ log10(x)  أساسه 10
 
 -------------------------------------------------------------------------
 
-** Partition Principle (Separators)
-
-// الفكرة: لتقسيم شيء إلى س اجزاء  س-1  نحتاج فواصل
-// Example:
-//      3 parts -> 2 separators
-//      5 parts -> 4 separators
-
--------------------------------------------------------------------------
-
-*** Fencepost Principle (Gap Counting)
-
-// الفكرة: إذا كان لديك س عناصر متتالية   فإن عدد الفراغات بينها وحولها يساوي س+1
-// Example:
-//      000  -> 4 gaps
-//      ***** -> 6 gaps
-
--------------------------------------------------------------------------
 
 *** Stars and Bars
 
@@ -587,17 +521,14 @@ Summary
 
 *** Pigeonhole Principle (Dirichlet Principle)
 
-الفكرة: إذا كان عدد العناصر أكبر من عدد الحالات/الصناديق ⇒ لازم يحصل تكرار.
 n items, m boxes
 if (n > m)
     => at least one box contains >= 2 items
 General Form
-إذا وزعنا n عنصر على k صناديق:
 At least one box contains
 
 ceil(n / k)
 (k + 1) Rule
-لضمان وجود (k+1) عناصر متشابهة داخل n صناديق:
 Need = k * n + 1
 
 Strong Form
@@ -606,45 +537,10 @@ q1 , q2 , ... , qn
 فأقل عدد نختاره هو:
 q1 + q2 + ... + qn - n + 1
 
-قبل ما تحل أي مسألة اسأل نفسك:
-□ هل عدد الحالات محدود؟
-□ هل فيه:
-   mod
-   remainder
-   prefix % m
-   colors
-   months
-   buckets
-   hashing
-   parity
-   characters
-□ هل n > عدد الحالات؟
-إذا نعم ⇒ فكر في Pigeonhole Principle أولًا.
 
 ***Pigeonhole Principle (Modulo num example:5)
 // Used to prove that any valid group with more than 5 elements
  can always be split into smaller valid groups.
-
--------------------------------------------------------------------------
-
-*** Number of integer points in (x,y) in circle with radius R
-
-Math Observation  num of integer Points in circle ≈ Circle Area = πR²  Upper Bound of R ≈ sqrt(K / π)
-// Circle Points must satisfy  x² + y² <= R²
-// for each x:
-//     y = floor(sqrt(R²-x²)) //number of probability y instead of use loop that can make Time exceed
-//     ans += (2*y)  +1  بنزود 1 عشان يحسب الاحداثي مع الزيرو
-// Total Points     Answer = 4*ans + 1
-// (Use symmetry: compute only the first quadrant, then multiply by 4,
-// and add the center point(0,0))
-auto valid = [&](ll R) {
-    ll cnt = 0;
-    for (ll x = 1; x <= R; x++) {
-        ll y = sqrt(R*R - x*x);
-        cnt += y;
-    }
-    return (4*cnt + 1 >= K);
-};
 
 -------------------------------------------------------------------------
 
@@ -672,32 +568,8 @@ If mod is prime:   inv(x) = x^(mod-2) % mod   (Fermat's Little Theorem)
 
 *** MEX Construction
 
-
-// Goal: Build the lexicographically greatest MEX string.
-// Idea: Let m = n / k (size of each group).
-// For each group:  Find the first character with freq == 0 (or reach m). This character is the MEX.
-// - Characters after MEX are irrelevant for future groups.
-//Time: O(n)Space: O(1) (26 letters)
-int n, k;
-cin >> n >> k;
-string s; cin >> s;
-
-int m = n / k;
-
-vector<int> freq(26, 0);
-for (char c : s) {
-    freq[c - 'a']++;
-}
-
-string ans = "";
-
-for (int i = 0; i < k; i++) {
-    int mex = 0;
-
     while (mex < m && freq[mex] > 0) {
         freq[mex]--;
         mex++;
     }
-    ans += (char)('a' + mex);
-}
-cout << ans << en;
+
