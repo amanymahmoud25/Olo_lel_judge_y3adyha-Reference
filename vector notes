@@ -37,40 +37,9 @@ not clear data so must but before it clear();
 *** memset vs fill vs assign
 
 
-الدالة	تعمل مع	القيم	تغير الحجم
-memset	Array	0 أو -1 فقط	❌
-fill	Array + Vector	أي قيمة	❌
-assign	Vector فقط	أي قيمة	✅
+الدالة        	تعمل مع	القيم               	تغير الحجم
+memset      Array	0 أو -1 فقط         	❌
+fill	      Array + Vector	أي قيمة	    ❌
+assign    	Vector فقط	أي قيمة	          ✅
 
-1️⃣ memset
-int arr[100];
-
-memset(arr, 0, sizeof(arr));   // كلها 0
-memset(arr, -1, sizeof(arr));  // كلها -1
-
-2️⃣ fill
-array
-
-fill(arr, arr + n, 1);
-fill(arr, arr + n, 100);
-fill(arr, arr + n, 1e9);
-Vector
-fill(v.begin(), v.end(), 1);
-fill(v.begin(), v.end(), 1e9);
-fill(all(v), 0);
-
-
-❌ أشهر الأخطاء
-fill(arr, arr + 1000, 0);
-إذا كان حجم المصفوفة أقل من 1000 سيؤدي إلى  Undefined Behavior.
-Fill لا يغير الحجم، بل يملأ العناصر الموجودة فقط.
-
-3️⃣ assign
-vector<int> v;
-
-v.assign(n, 0);
-
-v.assign(n, -1);
-
-v.assign(n, 1e9);
 
