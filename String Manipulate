@@ -1,25 +1,11 @@
-*** Convert from string number  long long
-
-
-string m;   cin >> m;
-// نفصل الرقم عن الحرف الأخير ونحوله لـ long long
-ll unit = stoll(m.substr(0, m.size() - 1));
-
-// نفحص الحرف الأخير
-if (m.back() == 'Gaga') unit *= 1024;
-else if (m.back() == 'Tera') unit *= 1024 * 1024;
-// لو كان M مش هنضرب في حاجة
-
--------------------------------------------------------------------------
-
-لتقسيم النصوص***  (String Splitting)
+*** String Splitting
 
 
 string text = "dog cat cat dog"; 
 vector<string> words; string word;
- // بنستخدم stringstream عشان نقرأ النص كلمة كلمة 
+
 stringstream ss(text); 
-// اللوب دي بتسحب كل كلمة مفصولة بمسافة وتحطها في الفيكتور 
+
 while (ss >> word) {
  words.push_back(word);
  }
@@ -46,16 +32,6 @@ string getUniqueString(string str) {
 auto res = unique(str.begin(), str.end()); 
 return string(str.begin(), res);
  }
-
-
--------------------------------------------------------------------------
-
-*** (Upper  Lower Case):
-
- يمكنك التحويل بين الحرف الكابيتال والسمول عن طريق عمل XOR مع الفراغ
-char swapped = 'A' ^ ' ' (result 'a').
-
-
 
 
 
