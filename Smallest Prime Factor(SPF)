@@ -1,0 +1,23 @@
+Smallest Prime Factor
+// Calculating (SPF)for every number till MAXN.
+// Time: O(N log log N)    to 1e7
+
+#define MAXN 100001
+vector<int> spf(MAXN + 1);
+
+void SPF() {
+    for (int i = 1; i <= MAXN; i++) {
+        spf[i] = i;
+    }
+
+    for (int i = 2; i * i <= MAXN; i++) {
+        if (spf[i] == i) {
+            for (int j = i * i; j <= MAXN; j += i) {
+                if (spf[j] == j) {
+                    spf[j] = i;
+                }
+            }
+        }
+    }
+}
+
