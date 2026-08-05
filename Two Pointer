@@ -1,9 +1,5 @@
 *** Two Pointer with Variable Size
 
-
-ans = min(ans, r - l + 1);   // أصغر طول
-ans = max(ans, r - l + 1);   // أكبر طول
-ans = max(ans, sum);         // أكبر Sum
 void twoPointer(){
     ll l = 0, r = 0, sum = 0, ans = 0;
     auto isValidWindow = [&](){
@@ -69,10 +65,8 @@ void fixedWindow(){
 
 -------------------------------------------------------------------------
 
-*** أقل Window تحقق شرط (Minimum Window)
+(Minimum Window)
 
-
-دي مختلفة شوية لأننا بنصغر الويندو وهي  Valid.
 void minimumWindow(){
 
     int l = 0, r = 0;
