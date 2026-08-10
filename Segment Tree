@@ -1,0 +1,64 @@
+// ==================== SEGMENT TREE ====================
+// Point Update & Range Query (Min/Max/Sum/GCD)
+// Time: O(log N) per operation | Space: O(N)
+// WARNING: 0-based indexing for range [0, n-1]
+
+#include <vector>
+#include <algorithm>
+#include <climits>
+
+using namespace std;
+
+struct SegmentTree {
+private:
+    vector<int> seg;
+    int sz;
+    int skip = INT_MAX; // Neutral element: INT_MAX for min, INT_MIN for max, 0 for sum
+
+    // Merge function (Change based on problem: min, max, sum, gcd)
+    int merge(int a, int b) {
+        return min(a, b);
+    }
+
+    void update(int l, int r, int node, int idx, int val) {
+        if (l == r) {
+            seg[node] = val;
+            return;
+        }
+        int mid = (l + r) >> 1;
+        if (idx > mid) {
+            update(mid + 1, r, 2 * node + 2, idx, val);
+        } else {
+            update(l, mid, 2 * node + 1, idx, val);
+        }
+        seg[node] = merge(seg[2 * node + 1], seg[2 * node + 2]);
+    }
+
+    int query(int l, int r, int node, int lx, int rx) {
+        if (l > rx || r < lx) return skip;      // No overlap
+        if (l >= lx && r <= rx) return seg[node]; // Total overlap
+        
+        int mid = (l + r) >> 1;                 // Partial overlap
+        int a = query(l, mid, 2 * node + 1, lx, rx);
+        int b = query(mid + 1, r, 2 * node + 2, lx, rx);
+        return merge(a, b);
+    }
+
+public:
+    // Initialize tree size to next power of 2
+    SegmentTree(int n) {
+        sz = 1;
+        while (sz < n) sz <<= 1;
+        seg = vector<int>(sz << 1, skip);
+    }
+
+    // Public Point Update interface: set array[idx] = val
+    void update(int idx, int val) {
+        update(0, sz - 1, 0, idx, val);
+    }
+
+    // Public Range Query interface: query range [l, r]
+    int query(int l, int r) {
+        return query(0, sz - 1, 0, l, r);
+    }
+};
