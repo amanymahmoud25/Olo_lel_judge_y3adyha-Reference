@@ -1,0 +1,95 @@
+String (std::string)سلسلة نصية متغيرة الحجم نتعامل معها كـ Array من الـ Characters.Space Complexity: $O(N)$ حيث $N$ طول النص.1. أهم الفنكشنز الأساسيةC++string s = "codeforces";
+
+s.size();          // O(1) - طول الاسترينج (أو s.length())
+s.empty();         // O(1) - بترجع true لو الاسترينج فاضي
+s.push_back('a');  // O(1) Amortized - إضافة حرف في الآخر (أو s += 'a')
+s.pop_back();      // O(1) - مسح آخر حرف
+s.front();         // O(1) - قراءة أول حرف
+s.back();          // O(1) - قراءة آخر حرف
+s.clear();         // O(N) - تفريغ الاسترينج بالكامل
+
+--------------------------------------------------------
+
+2. اقتطاع والبحث والتعديل (Substrings & Search)
+string s = "hello world";
+
+// O(len) - اقتطاع جزء بدءاً من index 3 وبطول 4 حروف
+string sub = s.substr(3, 4); // "lo w"
+
+// O(N * M) - البحث عن أول ظهور لـ "world"
+int idx = s.find("world"); 
+if (idx != string::npos) {
+    // موجود عند الأندكس idx
+}
+
+// O(N * M) - البحث عن آخر ظهور لـ "l" من جهة اليمين
+int last_idx = s.rfind("l");
+
+// O(N) - مسح 3 حروف بدءاً من index 2
+s.erase(2, 3); 
+
+// O(N) - إدراج نص عند index 5
+s.insert(5, "abc");
+
+// O(N) - استبدال 3 حروف بدءاً من index 2 بـ "xyz"
+s.replace(2, 3, "xyz");
+
+--------------------------------------------------------
+
+3. تحويل الأرقام والنصوص (Conversions)
+C++
+// O(log10 N) - تحويل رقم لـ string
+string s1 = to_string(12345); 
+
+// O(N) - تحويل string لرقم int
+int num1 = stoi("12345"); 
+
+// O(N) - تحويل string لرقم long long
+long long num2 = stoll("1234567891011"); 
+
+--------------------------------------------------------
+
+4. الخوارزميات الشائعة مع الاسترينج (Algorithms)
+C++
+string s = "codeforces";
+
+// O(N) - عكس الاسترينج
+reverse(s.begin(), s.end());
+
+// O(N log N) - ترتيب الحروف أبجدياً
+sort(s.begin(), s.end());
+
+// O(N) - تحويل الاسترينج لـ Lowercase
+for (char &c : s) c = tolower(c);
+
+// O(N) - تحويل الاسترينج لـ Uppercase
+for (char &c : s) c = toupper(c);
+
+--------------------------------------------------------
+
+5. تريكات مهمة في المسابقات (CP Pitfalls & Tricks) ⚠️
+الفرق بين cin >> s و getline:
+
+cin >> s: بتدرأ الكلمة وتوقف عند أول مسافة أو سطر جديد.
+
+getline(cin, s): بتدرأ السطر كامل بالمساحات.
+
+تنبيه: لو استخدمتي cin >> x وبعدها getline(cin, s) مباشرة،زم تحطي cin.ignore() في النص عشان تاكل الـ Newline المتبقية.
+
+تسريع عملية التجميع (String Concatenation):
+// ❌ SLOW: O(N) per operation -> O(N^2) total in a loop
+// Creates a new string copy in memory every time
+s = s + ch;
+
+
+// ✅ FAST: O(1) Amortized -> O(N) total in a loop
+// Appends in-place without reallocating full memory
+s += ch;
+s.push_back(ch);
+
+// Check Character Types (Time: O(1) | Space: O(1))
+
+isalpha(c); // Returns true if 'c' is an alphabetic letter (a-z, A-Z)
+isdigit(c); // Returns true if 'c' is a digit (0-9)
+islower(c); // Returns true if 'c' is a lowercase letter (a-z)
+isupper(c); // Returns true if 'c' is an uppercase letter (A-Z)
