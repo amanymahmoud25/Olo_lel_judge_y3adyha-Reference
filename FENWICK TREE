@@ -1,0 +1,38 @@
+// ==================== FENWICK TREE (BIT) ====================
+// Range Sum Query & Point Update
+// Time: O(log N) per operation | Space: O(N)
+// WARNING: 1-based indexing ONLY! (idx = 0 causes infinite loop)
+
+struct FenwickTree {
+    vector<ll> bit;
+    int sz;
+
+    // Constructor: initialize size and empty bit vector
+    FenwickTree(int n) {
+        sz = n + 1;
+        bit = vector<ll>(sz, 0);
+    }
+
+    // Add 'val' to element at index 'idx'
+    void update(int idx, ll val) {
+        while (idx < sz) {
+            bit[idx] += val;
+            idx += idx & -idx; // Move to next node
+        }
+    }
+
+    // Calculate prefix sum from 1 to 'idx'
+    ll query(int idx) {
+        ll ret = 0;
+        while (idx > 0) {
+            ret += bit[idx];
+            idx -= idx & -idx; // Move to parent node
+        }
+        return ret;
+    }
+
+    // Calculate sum in range [l, r]
+    ll prefix(int l, int r) {
+        return query(r) - query(l - 1);
+    }
+};
