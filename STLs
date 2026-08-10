@@ -1,0 +1,110 @@
+1. Vector (std::vector)مصفوفة ديناميكية (حجمها بيتغير أوتوماتيك).Space Complexity: $O(N)$أهم الفنكشنز:C++vector<int> v;
+
+v.push_back(x);   // O(1) - إضافة عنصر في الآخر
+v.pop_back();     // O(1) - مسح آخر عنصر
+v[i];             // O(1) - الوصول للعنصر رقم i
+v.front();        // O(1) - قراءة أول عنصر
+v.back();         // O(1) - قراءة آخر عنصر
+v.size();         // O(1) - عدد العناصر
+v.empty();        // O(1) - بترجع true لو فاضي
+v.clear();        // O(N) - مسح كل العناصر
+v.resize(n);      // O(N) - تغيير حجم الـ vector
+
+--------------------------------------------------------
+
+2. Set (std::set)مجموعة مترتبة تصاعدياً أوتوماتيك ومفيهاش أرقام متكررة.Space Complexity: $O(N)$أهم الفنكشنز:C++set<int> st;
+
+st.insert(x);       // O(log N) - إضافة عنصر (لو موجود مش بيكرره)
+st.erase(x);        // O(log N) - مسح العنصر x
+st.count(x);        // O(log N) - بترجع 1 لو موجود و 0 لو مش موجود
+st.find(x);         // O(log N) - بترجع iterator للمكان بتاعه
+st.lower_bound(x);  // O(log N) - بترجع iterator لأول عنصر أكبر من أو يساوي x
+st.upper_bound(x);  // O(log N) - بترجع iterator لأول عنصر أكبر تماماً من x
+st.size();          // O(1)     - عدد العناصر
+st.clear();         // O(N)     - مسح كل العناصر
+
+--------------------------------------------------------
+
+3. Map (std::map)جدول بيحفظ البيانات كـ key و value، وبيبقى مترتب حسب الـ key أوتوماتيك والمفاتيح مش بتتكرر.Space Complexity: $O(N)$أهم الفنكشنز:C++map<string, int> mp;
+
+mp[key] = val;      // O(log N) - إضافة أو تعديل قيمة الـ key
+mp.erase(key);      // O(log N) - مسح الـ key بالـ value بتاعته
+mp.count(key);      // O(log N) - التأكد هل الـ key موجود ولا لا (0 أو 1)
+mp.find(key);       // O(log N) - البحث عن مكان الـ key
+mp.size();          // O(1)     - عدد الـ keys
+mp.clear();         // O(N)     - مسح الماب بالكامل
+
+--------------------------------------------------------
+
+4. Multiset (std::multiset)زي الـ set بالظبط (مترتبة أوتوماتيك)، بس بتسمح بتكرار الأرقام.Space Complexity: $O(N)$أهم الفنكشنز:C++multiset<int> ms;
+
+ms.insert(x);             // O(log N) - إضافة عنصر
+ms.erase(ms.find(x));     // O(log N) - مسح نسخة واحدة فقط من الرقم x ⚠️
+ms.erase(x);              // O(log N + count) - مسح *كل* النسخ المتكررة من x
+ms.count(x);              // O(log N + count) - عدّ تكرارات الرقم x
+ms.lower_bound(x);        // O(log N) - أول عنصر أكبر من أو يساوي x
+
+--------------------------------------------------------
+
+5. Queue (std::queue)طابور بالترتيب: اللي يدخل الأول يخرج الأول (FIFO).Space Complexity: $O(N)$أهم الفنكشنز:C++queue<int> q;
+
+q.push(x);    // O(1) - إضافة عنصر من ورا
+q.pop();      // O(1) - مسح أول عنصر من قدام
+q.front();    // O(1) - قراءة أول عنصر من قدام
+q.back();     // O(1) - قراءة آخر عنصر دخل
+q.size();     // O(1) - عدد العناصر
+q.empty();    // O(1) - هل Queue فاضي؟
+
+--------------------------------------------------------
+
+6. Stack (std::stack)زي رأس الشكولاتة أو أطباق فوق بعض: اللي يدخل الآخر يخرج الأول (LIFO).Space Complexity: $O(N)$أهم الفنكشنز:C++stack<int> st;
+
+st.push(x);   // O(1) - إضافة عنصر فوق خالص
+st.pop();     // O(1) - مسح العنصر اللي فوق
+st.top();     // O(1) - قراءة العنصر اللي فوق
+st.size();    // O(1) - عدد العناصر
+st.empty();   // O(1) - هل الـ Stack فاضي؟
+
+--------------------------------------------------------
+
+7. Priority Queue (std::priority_queue)طابور بالأولويات: الرقم الأكبر بيبقى فوق خالص دايماً (Max-Heap).Space Complexity: $O(N)$أهم الفنكشنز:C++priority_queue<int> pq; // Max-Heap (الأكبر فوق)
+
+pq.push(x);   // O(log N) - إضافة عنصر
+pq.pop();     // O(log N) - مسح أكبر عنصر (اللي على الوش)
+pq.top();     // O(1)     - قراءة أكبر عنصر
+pq.size();    // O(1)     - عدد العناصر
+pq.empty();   // O(1)     - هل فاضية؟
+
+// عشان تحوليها لـ Min-Heap (الأصغر هو اللي فوق):
+priority_queue<int, vector<int>, greater<int>> min_pq;
+
+--------------------------------------------------------
+
+8. Unordered Set & Unordered Mapزي الـ set والـ map تماماً بس غير مترتبين خالص لأنهم معتمدين على Hash Table.Space Complexity: $O(N)$أهم الفنكشنز والتعقيد:C++unordered_set<int> us;
+unordered_map<int, int> um;
+
+// نفس اسم الفنكشنز: insert(), erase(), find(), count(), um[key]
+
+// Time Complexity:
+// Average Case: O(1) - أسرع من الـ set والـ map
+// Worst Case:   O(N) - ⚠️ ممكن تسبب TLE في Codeforces لو اتعمل عليها Anti-hash test
+
+--------------------------------------------------------
+
+9. Deque (std::deque)Double-Ended Queue: تقدر تزودي وتمسحي منها من الناحيتين (قدام وورا) ومعاها Direct Access.Space Complexity: $O(N)$أهم الفنكشنز:C++deque<int> dq;
+
+dq.push_back(x);   // O(1) - إضافة من الآخر
+dq.push_front(x);  // O(1) - إضافة من الأول
+dq.pop_back();     // O(1) - مسح من الآخر
+dq.pop_front();    // O(1) - مسح من الأول
+dq[i];             // O(1) - الوصول للعنصر رقم i
+
+--------------------------------------------------------
+
+10. Bitset (std::bitset)مصفوفة بتات (0 و 1) سريعة وموفرة للذاكرة جداً.Space Complexity: $O(N / 8)$ Bytesأهم الفنكشنز:C++bitset<100> bs; // حجز 100 بت كلها 0
+
+bs.set(i);     // O(1)     - يخلي البت رقم i بـ 1
+bs.reset(i);   // O(1)     - يخلي البت رقم i بـ 0
+bs.flip(i);    // O(1)     - يعكس البت رقم i
+bs.count();    // O(N/64)  - يعد كام بت قيمتها 1
+bs[i];         // O(1)     - قراءة قيمة البت i
