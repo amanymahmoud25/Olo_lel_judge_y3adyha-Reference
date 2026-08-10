@@ -1,0 +1,8 @@
+// Iterate over all N! permutations
+// Time: O(N! * N) | Space: O(1)
+vector<int> a = {1, 2, 3, 4};
+sort(a.begin(), a.end()); // MUST BE SORTED FIRST
+
+do {
+    // Process current permutation
+} while (next_permutation(a.begin(), a.end()));
