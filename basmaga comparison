@@ -1,0 +1,9 @@
+Is the array dynamic (has updates)?
+  │
+  ├── NO (Static Array):
+  │     ├── Range Min / Max / GCD  -->  Sparse Table  [O(1) Query]
+  │     └── Range Sum / XOR        -->  Prefix Sum    [O(1) Query]
+  │
+  └── YES (Dynamic Array):
+        ├── Point Update + Range Sum  -->  Fenwick Tree (BIT) [O(log N)]
+        └── Range Update / Complex    -->  Segment Tree       [O(log N)]
