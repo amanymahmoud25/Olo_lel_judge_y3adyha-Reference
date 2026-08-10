@@ -4,3 +4,10 @@ sort(all(rel), [&](const auto &x , const auto &y) {
     return sz1>sz2;
 });
 [&] ==> So that he does not make copies and extra time
+
+------------------
+// Sort by value ascending (least first); if equal, sort by cost descending (highest first)
+sort(v.begin(), v.end(), [](const Node& a, const Node& b) {
+    if (a.val != b.val) return a.val < b.val;
+    return a.cost > b.cost;
+});
