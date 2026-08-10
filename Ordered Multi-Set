@@ -1,11 +1,94 @@
-Ordered Multi-Set 
+Ordered Set & Ordered multiset
+Ordered set 
 
-#include<ext/pb_ds/assoc_container.hpp> // keep-include
-#include<ext/pb_ds/tree_policy.hpp> // keep-include
+Difference between set and ordered set : 
+There is not so much difference between the set and ordered set although ordered set can be assumed as an extended version of set capable of performing some more advanced functions that are extensively used in competitive programming.
+
+How to use : 
+define an object like this : ordered_set st ;
+then you can deal with it as you deal with set 
+
+Extra Functions : 
+**********
+find_by_order(k) .. O(log(N))
+It returns an iterator to the kth element (counting from zero) in the set in O(log(n)) time.
+To find the first element k must be zero.
+Let us assume we have a set s : {1, 5, 6, 17, 88}, 
+then :
+*(s.find_by_order(2)) : 3rd element in the set is 6
+*(s.find_by_order(4)) : 5th element in the set is 88
+
+order_of_key(k).. O(log(N))// 
+It returns to the number of items that are strictly smaller than our item k in O(log(n)) time.
+Let us assume we have a set s : {1, 5, 6, 17, 88}
+then :
+s.order_of_key(6) : Count of elements strictly smaller than 6 is 2.
+s.order_of_key(25) : Count of elements strictly smaller than 25 is 4.
+*******************
+
+1.1 Ordered Set
+
+#include <bits/stdc++.h>
+#include <ext/pb_ds/assoc_container.hpp>
+#include <ext/pb_ds/tree_policy.hpp>
 using namespace __gnu_pbds;
-template<typename key>
+using namespace std;
+#define ll long long
+#define ld long double
+#define nn "\n"
+ 
+#define ordered_set tree<ll, null_type, less<ll>, rb_tree_tag, tree_order_statistics_node_update>
+ 
+// oset.find_by_order(x) --> value in index x
+// oset.order_of_key(x) --> index of first value of x
+bool Exist(ordered_set &st,int x) {
+   if((st.upper_bound(x)) == st.end()) return 0;
+   return ((*st.upper_bound(x)) == x);
+}
+void Erase(ordered_set &s,int x) {
+   if(Exist(s,x)) s.erase(s.upper_bound(x));
+}
+ 
+void solve()
+{
+   ll n, x;
+   cin>>n>>x;
+   vector<ll>v(n);
+   vector<ll>pre(n+1,0);
+   for(int i=0;i<n;i++)
+   {
+      cin>>v[i];
+      pre[i+1]=v[i]+pre[i];
+   }
+   ordered_set st;
+   st.insert(0);
+   ll c=0;
+   for(int i=1;i<=n;i++)
+   {
+     ll xx=pre[i]-x;
+     c+=(st.size() - st.order_of_key(xx+1));
+     st.insert(pre[i]);
+   }
+   cout<<c<<nn;
+  
+}
 
+How to change it to Ordered Multiset :
+less -- > less_equal
+but if you want to erase an element .. you must erase it like this :
+st.erase(st.upper_bound(X));
 
+1.2 ordered multi set 
+
+#include <bits/stdc++.h>
+#include <ext/pb_ds/assoc_container.hpp>
+#include <ext/pb_ds/tree_policy.hpp>
+using namespace __gnu_pbds;
+using namespace std;
+#define ll long long
+#define ld long double
+#define nn "\n"
+ 
 class OrderedSet {
 private:
    typedef tree<long long,
@@ -61,7 +144,7 @@ public:
    }
 
 
-   int Count(long long x) {
+   ll Count(long long x) {
        if (!Exist(x)) {
            return 0;
        }
@@ -93,5 +176,35 @@ public:
 
        return *s.lower_bound(x);
    }
-};
 
+
+   ll num_of_elements_greater_than_x(ll x)
+   {
+       return s.size()-s.order_of_key(x+1);
+   }
+};
+ 
+ 
+void solve()
+{
+   ll n, x;
+   cin>>n>>x;
+   vector<ll>v(n);
+   vector<ll>pre(n+1,0);
+   for(int i=0;i<n;i++)
+   {
+      cin>>v[i];
+      pre[i+1]=v[i]+pre[i];
+   }
+   OrderedSet st;
+   st.Insert(0);
+   ll c=0;
+   for(int i=1;i<=n;i++)
+   {
+     ll xx=pre[i]-x;
+     c+=st.num_of_elements_greater_than_x(xx);
+     st.Insert(pre[i]);
+   }
+   cout<<c<<nn;
+  
+}
