@@ -1,115 +1,106 @@
-01 - Bit Manipulation
-Binary Conversion
-void convertToBinary(int n)
-{
-    if (n <= 1)
-    {
-        cout << n;
-        return;
-    }
-    convertToBinary(n >> 1);
-    cout << (n & 1);
+01 - Bit Manipulation (Merged & Optimized)
+1. Basic Bit Operations
+C++
+// Get the bit value (0 or 1) at index idx
+// Time: O(1) | Space: O(1)
+int getBit(long long num, int idx) {
+    return (num >> idx) & 1LL;
 }
 
-Time: O(log n)
-
-Check Odd / Even
-bool isEven(int n)
-{
-    return (n & 1) == 0;
-}
-
-Time: O(1)
-
-Count Number of Ones
-Method 1
-int countOnes(int n)
-{
-    int cnt = 0;
-    while (n)
-    {
-        cnt += (n & 1);
-        n >>= 1;
-    }
-    return cnt;
-}
-
-Time: O(log n)
-
-Method 2 (Brian Kernighan)
-int countOnes(int n)
-{
-    int cnt = 0;
-    while (n)
-    {
-        cnt++;
-        n &= (n - 1);
-    }
-    return cnt;
-}
-
-Time: O(number of set bits)
-
-Get Bit
-int getBit(int num, int idx)
-{
-    return (num >> idx) & 1;
-}
-
-Time: O(1)
-
-Set Bit
-int setBit(int num, int idx)
-{
+// Set bit at index idx to 1 (Returns modified value)
+// Time: O(1) | Space: O(1)
+long long setBit(long long num, int idx) {
     return num | (1LL << idx);
 }
 
-Time: O(1)
-
-Clear Bit
-int clearBit(int num, int idx)
-{
+// Clear bit at index idx to 0 (Returns modified value)
+// Time: O(1) | Space: O(1)
+long long clearBit(long long num, int idx) {
     return num & ~(1LL << idx);
 }
 
-Time: O(1)
-
-Flip Bit
-int flipBit(int num, int idx)
-{
+// Flip/Toggle bit at index idx (Returns modified value)
+// Time: O(1) | Space: O(1)
+long long flipBit(long long num, int idx) {
     return num ^ (1LL << idx);
 }
 
-Time: O(1)
-
-First Set Bit Value
-int firstOneBitValue(int num)
-{
-    return num & (-num);
+// Pass-by-reference versions (In-place)
+void setBitInPlace(long long &num, int idx)   { num |= (1LL << idx); }
+void clearBitInPlace(long long &num, int idx) { num &= ~(1LL << idx); }
+void flipBitInPlace(long long &num, int idx)  { num ^= (1LL << idx); }
+2. Properties & Checks
+C++
+// Check if number is Even
+// Time: O(1) | Space: O(1)
+bool isEven(long long n) {
+    return (n & 1) == 0;
 }
 
-Time: O(1)
-
-Check Power of Two
-bool isPowerOfTwo(int num)
-{
-    return num && !(num & (num - 1));
+// Check if number is Power of Two (Strictly positive numbers)
+// Time: O(1) | Space: O(1)
+bool isPowerOfTwo(long long num) {
+    return num > 0 && !(num & (num - 1));
+}
+3. Counting Set Bits (Popcount)
+C++
+// Method 1: Brian Kernighan's Algorithm
+// Time: O(Number of set bits) | Space: O(1)
+int countOnes(long long n) {
+    int cnt = 0;
+    while (n) {
+        cnt++;
+        n &= (n - 1); // Clears the lowest set bit
+    }
+    return cnt;
 }
 
-Time: O(1)
+// Method 2: GCC Built-in (Fastest - Recommended for Contests)
+// Time: O(1) | Space: O(1)
+int countOnesBuiltin(long long n) {
+    return __builtin_popcountll(n); // Use __builtin_popcount for int
+}
+4. LSB & MSB Operations
+C++
+// Get the decimal value of the First Set Bit (LSB) -> e.g., 18 (10010) -> 2 (00010)
+// Time: O(1) | Space: O(1)
+long long firstOneVal(long long num) {
+    return num & (-num); // Equivalent to num & ~(num - 1)
+}
 
-Rightmost Set Bit (LSB)
-int n = 18; // Binary: 10010 , n > 0
-int index = __builtin_ctz(n); // returns 1
-int index = __builtin_ctzll(n); // When n is Long long
-int index = log2(n & -n);
+// Index of Rightmost Set Bit (LSB) -> e.g., 18 (10010) -> index 1 (Requires n > 0)
+// Time: O(1) | Space: O(1)
+int getLSBIndex(long long n) {
+    return __builtin_ctzll(n); // ctz = Count Trailing Zeros
+}
 
-Time: O(1)
+// Index of Leftmost Set Bit (MSB) -> e.g., 18 (10010) -> index 4 (Requires n > 0)
+// Time: O(1) | Space: O(1)
+int getMSBIndex(long long n) {
+    return 63 - __builtin_clzll(n); // clz = Count Leading Zeros
+    // Alternative in C++: return __lg(n);
+}
+5. Power of Two Utilities
+C++
+// Smallest power of 2 strictly greater than n (e.g., 5 -> 8, 8 -> 16)
+// Time: O(1) | Space: O(1)
+long long nextPowerOfTwo(long long n) {
+    if (n <= 0) return 1;
+    return 1LL << (__lg(n) + 1);
+}
 
-Leftmost Set Bit (MSB)
-int n = 18; // Binary: 00...10010 , n > 0
-int index = 31 - __builtin_clz(n); // returns 4 (for a 32-bit int)
-int index = floor(log2(n)); 
-int index = 63 - __builtin_clzll(n); // When n is Long Long
+// Iterative version: O(log N)
+long long nextPowerOfTwoIterative(long long n) {
+    long long p = 1;
+    while (p <= n) p <<= 1;
+    return p;
+}
+6. Binary Printing & Formatting
+C++
+// Print Binary representation of n recursively
+// Time: O(log N) | Space: O(log N) due to call stack
+void printBinary(long long n) {
+    if (n > 1) printBinary(n >> 1);
+    cout << (n & 1);
+}
 
-Time: O(1)
