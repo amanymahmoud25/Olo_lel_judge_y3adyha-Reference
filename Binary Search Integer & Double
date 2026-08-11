@@ -23,21 +23,19 @@ cout<< ans<<endl;
 ** Binary Search Double
 
 
-dd l=0,r=mx, md,ans=0;
-
-auto valid=[&](dd md){
-
-    return (condition);
-};
-while(r-l>=1e-7){
-    //cout<<md<<endl;
-    md=l+(r-l)/2;
-    if(valid(md)){
-        ans=max(md,ans);
-        l=md;
-
+ ld l=0,r=1e12,ans=0;
+    int itr = 400;
+ 
+    while( itr -- && l<=r){
+        ld md=l+(r-l)/2;
+    
+        ld res = valid(md) ;
+       if (res <k )
+        {
+            l=md ;
+        }
+        else r=md;
     }
-    else r=md;
-}
-cout<<fixed<<setprecision(9)<<ans<<endl;
 
+     // في النهاية l و r متطابقان تقريباً، نطبع أيهما
+    cout <<fixed<<setprecision(6) <<l <<endl;
