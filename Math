@@ -758,5 +758,20 @@ If mod is prime:   inv(x) = x^(mod-2) % mod   (Fermat's Little Theorem)
        mex++;
    }
 
+-------------------------------------------------------------------------
+
+
+vector<int>PrimeDivisors(1e7 + 1);
+void calc()
+{
+    for (int i = 0; i < sz(Primes); i++)
+    {
+            for (int j = Primes[i] ; j <= 1e7; j += Primes[i])
+            {
+                PrimeDivisors[j]++;
+            }
+        
+    }
+}
 
 
