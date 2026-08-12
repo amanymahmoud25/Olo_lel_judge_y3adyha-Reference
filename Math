@@ -760,6 +760,15 @@ If mod is prime:   inv(x) = x^(mod-2) % mod   (Fermat's Little Theorem)
 
 -------------------------------------------------------------------------
 
+***Number of distinct prime factors of x.
+
+
+// PrimeDivisors[x] = Number of distinct prime factors of x.
+// EX:- PrimeDivisors[12] = 2
+
+// Time: O(N log log N) 
+// Space: O(N)
+
 
 vector<int>PrimeDivisors(1e7 + 1);
 void calc()
