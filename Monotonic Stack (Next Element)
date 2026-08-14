@@ -1,0 +1,60 @@
+
+***  Next Greater Element (NGE)
+
+// بيرجع مصفوفة فيها الـ Index بتاع أول عنصر أكبر من العنصر الحالي على اليمين
+// لو مفيش عنصر أكبر، القيمة بتفضل -1 (أو ممكن تخليها n حسب المسألة)
+
+vector<int> get_NGE(const vector<int>& a) {
+    int n = sz(a);
+    vector<int> nge(n, -1);
+    stack<int> st;
+
+    for (int i = 0; i < n; i++) {
+        // طول ما الـ Stack مش فاضي والعنصر الحالي أكبر من العنصر اللي فوق في الـ Stack
+        while (!st.empty() && a[st.top()] < a[i]) {
+            nge[st.top()] = i;
+            st.pop();
+        }
+        st.push(i);
+    }
+    return nge;
+}
+
+-------------------------------------------------
+
+**** Previous Smaller Element (PSE)
+
+// بيرجع مصفوفة فيها الـ Index بتاع أول عنصر أصغر من العنصر الحالي على الشمال
+
+
+vector<int> get_PSE(const vector<int>& a) {
+    int n = sz(a);
+    vector<int> pse(n, -1);
+    stack<int> st;
+
+    for (int i = 0; i < n; i++) {
+        // بنشيل كل العناصر اللي أكبر من أو تساوي العنصر الحالي
+        while (!st.empty() && a[st.top()] >= a[i]) {
+            st.pop();
+        }
+        // لو الـ Stack لسه فيه عناصر، يبقى اللي على الوش هو أول عنصر أصغر
+        if (!st.empty()) {
+            pse[i] = st.top();
+        }
+        st.push(i);
+    }
+    return pse;
+}
+
+-------------------------------------------------
+
+void solve() {
+ 
+    vector<int> nge = get_NGE(a);
+    
+    // طباعة النتيجة
+    for(int i = 0; i < n; i++) {
+        cout << nge[i] << " ";
+    }
+    cout << en;
+}
