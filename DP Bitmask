@@ -1,0 +1,92 @@
+// ============================================================================
+// BITMASK DYNAMIC PROGRAMMING CHEAT SHEET (N <= 20)
+// ============================================================================
+// Bitwise Operations:
+// (1 << i)          -> Mask containing only node i.
+// mask & (1 << v)   -> Check if node v is visited (returns 0 if NOT visited).
+// mask | (1 << v)   -> Add node v to mask.
+// (1 << n) - 1      -> Full mask (all N nodes visited).
+// ============================================================================
+
+#include <bits/stdc++.h>
+using namespace std;
+
+#define ll long long
+
+// ----------------------------------------------------------------------------
+// TEMPLATE 1: COUNTING HAMILTONIAN PATHS
+// Goal: Total number of distinct paths visiting ALL N nodes exactly once.
+// Time: O(2^N * N^2) | Space: O(2^N * N) | N <= 20
+// ----------------------------------------------------------------------------
+ll countHamiltonianPaths(int n, const vector<vector<bool>>& adj) {
+    // dp[mask][u]: number of paths visiting 'mask' nodes, ending at 'u'
+    vector<vector<ll>> dp(1 << n, vector<ll>(n, 0));
+
+    // Base Case: Path of length 1 starting at each node
+    for (int i = 0; i < n; i++) {
+        dp[1 << i][i] = 1;
+    }
+
+    // Iterate over all sub-sets
+    for (int mask = 1; mask < (1 << n); mask++) {
+        for (int u = 0; u < n; u++) {
+            if (!dp[mask][u]) continue; // Skip unreachable states
+
+            for (int v = 0; v < n; v++) {
+                if (!(mask & (1 << v)) && adj[u][v]) {
+                    dp[mask | (1 << v)][v] += dp[mask][u];
+                }
+            }
+        }
+    }
+
+    // Collect result for full mask
+    ll total_paths = 0;
+    int full_mask = (1 << n) - 1;
+
+    for (int u = 0; u < n; u++) {
+        total_paths += dp[full_mask][u];
+    }
+
+    return total_paths;
+}
+
+// ----------------------------------------------------------------------------
+// TEMPLATE 2: TRAVELLING SALESPERSON PROBLEM (TSP - MIN COST)
+// Goal: Minimum total distance/cost to visit ALL N nodes.
+// Time: O(2^N * N^2) | Space: O(2^N * N) | N <= 20
+// ----------------------------------------------------------------------------
+const ll INF = 1e18;
+
+ll minCostTSP(int n, const vector<vector<ll>>& weight) {
+    // dp[mask][u]: minimum cost to visit 'mask' nodes, ending at 'u'
+    vector<vector<ll>> dp(1 << n, vector<ll>(n, INF));
+
+    // Base Case: Starting cost at initial node is 0
+    for (int i = 0; i < n; i++) {
+        dp[1 << i][i] = 0;
+    }
+
+    for (int mask = 1; mask < (1 << n); mask++) {
+        for (int u = 0; u < n; u++) {
+            if (dp[mask][u] == INF) continue; // Skip unreachable states
+
+            for (int v = 0; v < n; v++) {
+                if (!(mask & (1 << v)) && weight[u][v] != INF) {
+                    dp[mask | (1 << v)][v] = min(dp[mask | (1 << v)][v], 
+                                                  dp[mask][u] + weight[u][v]);
+                }
+            }
+        }
+    }
+
+    // Collect minimum cost for full mask
+    ll min_cost = INF;
+    int full_mask = (1 << n) - 1;
+
+    for (int u = 0; u < n; u++) {
+        min_cost = min(min_cost, dp[full_mask][u]);
+    }
+
+    return min_cost;
+}
