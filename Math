@@ -668,21 +668,26 @@ log10(x)  أساسه 10
 
 
 // x1 + x2 + ... + xk = n this solve number of ways to solve these equation
+
 // 1) xi >= 0 (Zero Allowed)
 // Idea:  Represent n as stars (*) and use (k-1) bars (|)
 // to divide them into k groups.
 // Total Symbols = n + (k-1)
 // Answer: C(n+k-1, k-1)  or C(n+k-1, n)
+
 // 2) xi >= 1 (Positive Only)
 // Idea: Give each variable 1 first.
 // Remaining Sum = n-k
 // Apply Case (1):
 //      C((n-k)+(k-1), k-1)  Simplifies to:  C(n-1, k-1)
+
 Summary
 // Zero Allowed    : C(n+k-1, k-1)
 // Positive Only   : Give each variable 1 first
 //                   Answer = C(n-1, k-1)
 
+عدد الأماكن (الفواصل) ==> N
+عدد العناصر (النجوم) ==> R
 
 -------------------------------------------------------------------------
 
