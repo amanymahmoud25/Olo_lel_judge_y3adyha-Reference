@@ -1,0 +1,92 @@
+/*
+ * Problem: Range Max Subsegment XOR
+ * 
+ * --- Math Simplification ---
+ * Given function: f(x, y) = 2 * (x | y) - (x + y)
+ * Using the identity: x + y = (x | y) + (x & y)
+ * Substituting gives: f(x, y) = 2 * (x | y) - ((x | y) + (x & y))
+ *                             = (x | y) - (x & y) 
+ *                             = x ^ y (Bitwise XOR)
+ * 
+ * Goal: For each query (L, R), find the maximum XOR sum among all 
+ * contiguous subsegments fully contained within the range [L, R].
+ * 
+ * --- DP Idea & Transitions ---
+ * The optimal subsegment within range [L, R] must fall into one of three cases:
+ *   1. The full range [L, R] itself: pref[R + 1] ^ pref[L]
+ *   2. The optimal subsegment lies completely in [L, R - 1]: DP(L, R - 1)
+ *   3. The optimal subsegment lies completely in [L + 1, R]: DP(L + 1, R)
+ * 
+ * Transition Equation:
+ * DP(L, R) = max({ full_range_xor, DP(L, R - 1), DP(L + 1, R) })
+ * 
+ * --- Complexity ---
+ * Time Complexity : O(N^2 + Q) - Precomputing DP table takes O(N^2), each query is O(1).
+ * Space Complexity: O(N^2)     - N x N table for memoization.
+ */
+
+#include <bits/stdc++.h>
+using namespace std;
+
+#define ll long long
+#define int ll
+
+int n;
+vector<int> v, pref;
+vector<vector<int>> dp;
+
+// Top-Down DP function to find max XOR subsegment in range [l, r]
+int get_max_xor(int l, int r) {
+    // Base Case: Invalid range
+    if (r < l) return 0;
+
+    // Return memoized answer if already computed
+    int &ret = dp[l][r];
+    if (~ret) return ret; 
+
+    // Option 1: XOR sum of the full range [l, r]
+    int full_range_xor = pref[r + 1] ^ pref[l];
+
+    // Option 2: Best subsegment inside range [l, r - 1]
+    int left_subrange  = get_max_xor(l, r - 1);
+
+    // Option 3: Best subsegment inside range [l + 1, r]
+    int right_subrange = get_max_xor(l + 1, r);
+
+    // Take the maximum of all three options
+    return ret = max({full_range_xor, left_subrange, right_subrange});
+}
+
+void solve() {
+    cin >> n;
+    v.resize(n);
+    pref.assign(n + 1, 0);
+    dp.assign(n, vector<int>(n, -1));
+
+    for (int i = 0; i < n; i++) {
+        cin >> v[i];
+        // Build prefix XOR array: pref[i+1] stores XOR sum of v[0...i]
+        pref[i + 1] = pref[i] ^ v[i];
+    }
+
+    // Precompute the entire DP table starting from full array range [0, n - 1]
+    get_max_xor(0, n - 1);
+
+    int q; cin >> q;
+    while (q--) {
+        int l, r; cin >> l >> r;
+        l--, r--; // Convert to 0-based indexing
+        
+        // Answer query in O(1) time from DP table
+        cout << dp[l][r] << "\n";
+    }
+}
+
+signed main() {
+    // Optimize standard I/O operations
+    ios::sync_with_stdio(false);
+    cin.tie(NULL);
+
+    solve();
+    return 0;
+}
