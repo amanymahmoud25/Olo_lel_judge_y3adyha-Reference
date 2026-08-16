@@ -1,0 +1,127 @@
+====================================================================
+                        GEOMETRY FORMULAS
+====================================================================
+
+
+/*
+*** 1. Shoelace Formula — مساحة Polygon
+
+بيعمل إيه؟
+- بيحسب مساحة أي Polygon من إحداثيات الـ vertices بتاعته.
+
+أستخدمه إمتى؟
+- لما تكون معايا نقاط المضلع (x, y).
+- لازم النقاط تكون مرتبة على حدود المضلع بالترتيب.
+
+القانون:
+Area = |Σ(xi * yi+1 - yi * xi+1)| / 2
+
+Time: O(N)
+*/
+
+using T = long double;
+using pt = complex<T>;
+
+#define x real()
+#define y imag()
+
+T cross(pt a, pt b) {
+    return a.x * b.y - a.y * b.x;
+}
+
+ld polygonArea(vector<pt> p) {
+    ld area = 0;
+
+    for (int i = 0, n = p.size(); i < n; i++)
+        area += cross(p[i], p[(i + 1) % n]);
+
+    return abs(area) / 2.0;
+}
+
+
+/*
+*** 2. Heron's Formula — مساحة Triangle
+
+بيعمل إيه؟
+- بيحسب مساحة المثلث لما يكون معايا أطوال الأضلاع الثلاثة فقط.
+
+أستخدمه إمتى؟
+- عندي a, b, c ومفيش Height.
+- لازم الأضلاع تحقق Triangle Inequality.
+
+القانون:
+s = (a+b+c)/2
+Area = sqrt(s(s-a)(s-b)(s-c))
+*/
+
+long double triangleArea(
+    long double a,
+    long double b,
+    long double c
+) {
+    long double s = (a + b + c) / 2.0L;
+
+    // لازم يكون مثلث صالح
+    if (a + b <= c || a + c <= b || b + c <= a)
+        return 0;
+
+    return sqrt(s * (s-a) * (s-b) * (s-c));
+}
+
+
+/*
+*** 3. Regular Polygon Area — مساحة المضلع المنتظم
+
+بيعمل إيه؟
+- بيحسب مساحة Polygon منتظم.
+
+أستخدمه إمتى؟
+- لما كل الأضلاع متساوية.
+- ومعايا:
+    n    = عدد الأضلاع
+    side = طول الضلع
+
+القانون:
+Area = (n * side²) / (4 * tan(π/n))
+*/
+
+const long double PI = acosl(-1.0L);
+
+long double regularPolygonArea(
+    int n,
+    long double side
+) {
+    return (n * side * side) /
+           (4.0L * tanl(PI / n));
+}
+
+
+/*
+*** 4. Brahmagupta's Formula — مساحة Cyclic Quadrilateral
+
+بيعمل إيه؟
+- بيحسب مساحة Quadrilateral دائري.
+
+أستخدمه إمتى؟
+- لما يكون عندي أطوال الأضلاع الأربعة.
+- والـ 4 vertices واقعين على نفس Circle.
+
+القانون:
+s = (a+b+c+d)/2
+
+Area = sqrt((s-a)(s-b)(s-c)(s-d))
+*/
+
+long double cyclicQuadArea(
+    long double a,
+    long double b,
+    long double c,
+    long double d
+) {
+    long double s = (a + b + c + d) / 2.0L;
+
+    return sqrt(
+        (s-a) * (s-b) *
+        (s-c) * (s-d)
+    );
+}
