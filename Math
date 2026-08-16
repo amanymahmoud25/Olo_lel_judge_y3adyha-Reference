@@ -50,6 +50,32 @@ bool isPrime(long long n) {
 -------------------------------------------------------------------------
 
 
+*** Divisor Sieve
+
+// Count the number of divisors for every number from 1 to N.
+/ Range:
+// - N <= 1e6  -> Very Safe
+// - N <= 1e7  -> Usually Safe with int (~40 MB)
+// - N >= 1e8  -> Usually avoid this approach
+
+// Memory: int ~ 4 bytes ==> 1e7 integers ≈ 40 MB
+
+// Time: O(N log N) & Space: O(N)
+
+// Exe: num_divisors[12] = 6  // 1,2,3,4,6,12
+
+
+vector<int> num_divisors(N + 1, 0);
+
+for (int i = 1; i <= N; i++) {
+    for (int j = i; j <= N; j += i) {
+        num_divisors[j]++;
+    }
+}
+
+
+-------------------------------------------------------------------------
+
 *** Divisors using √N
 // Time: O(sqrt(N))
   
