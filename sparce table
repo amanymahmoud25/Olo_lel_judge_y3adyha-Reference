@@ -1,62 +1,84 @@
-// ==================== SPARSE TABLE ====================
-// Static Range Queries (RMQ, GCD, MAX)
-// Build: O(N log N) | Query: O(1) for idempotent ops | Space: O(N log N)
-
-#include <iostream>
-#include <vector>
-#include <algorithm>
-#include <climits>
-
+#include <bits/stdc++.h>
 using namespace std;
 
-const int N = 2e5 + 5;
-const int LOGN = 20;
+#define ll long long
+#define int ll
 
-ll s[N];
-ll T[N][LOGN];
-int Log[N];
+const int INF = 1e18; // تم تصحيح الـ INF
 
-// Operation function (min, max, gcd, etc.)
-ll merge(ll a, ll b) {
-    return min(a, b);
-}
+// هيكل مرن للـ Sparse Table يدعم أي عملية (GCD, AND, OR, MIN, MAX, SUM)
+template <typename T, typename F>
+struct SparseTable {
+    int n, K;
+    vector<vector<T>> st;
+    vector<int> lg;
+    F combine;
 
-// Precompute log2 values up to N -> Time: O(N)
-void preCount() {
-    Log[1] = 0;
-    for (int i = 2; i < N; i++) {
-        Log[i] = Log[i >> 1] + 1;
-    }
-}
+    SparseTable() {}
 
-// Build Sparse Table -> Time: O(N log N)
-void build(int n) {
-    for (int i = 0; i < n; i++) {
-        T[i][0] = s[i];
-    }
-    
-    for (int pw = 1; (1 << pw) <= n; pw++) {
-        for (int i = 0; i + (1 << pw) <= n; i++) {
-            T[i][pw] = merge(T[i][pw - 1], T[i + (1 << (pw - 1))][pw - 1]);
+    SparseTable(const vector<T>& a, F op) : combine(op) {
+        n = a.size();
+        K = __lg(n) + 1;
+        st.assign(n, vector<T>(K));
+        lg.assign(n + 1, 0);
+
+        // Precompute Log values
+        for (int i = 2; i <= n; i++) lg[i] = lg[i / 2] + 1;
+
+        // Base cases
+        for (int i = 0; i < n; i++) st[i][0] = a[i];
+
+        // Build Table -> O(N log N)
+        for (int j = 1; j < K; j++) {
+            for (int i = 0; i + (1 << j) <= n; i++) {
+                st[i][j] = combine(st[i][j - 1], st[i + (1 << (j - 1))][j - 1]);
+            }
         }
     }
-}
 
-// O(1) Query for Idempotent operations (min, max, gcd)
-ll query2(int l, int r) {
-    int sz = r - l + 1;
-    int pw = Log[sz];
-    return merge(T[l][pw], T[r - (1 << pw) + 1][pw]);
-}
-
-// O(log N) Query for Non-idempotent operations
-ll query(int l, int r) {
-    if (r < l) return LLONG_MAX;
-    int sz = r - l + 1;
-    for (int i = 0; i < LOGN; i++) {
-        if ((sz >> i) & 1) {
-            return merge(query(l + (1 << i), r), T[l][i]);
-        }
+    // O(1) Query for Idempotent operations (GCD, AND, OR, MIN, MAX)
+    T query(int l, int r) {
+        int j = lg[r - l + 1];
+        return combine(st[l][j], st[r - (1 << j) + 1][j]);
     }
-    return LLONG_MAX;
+
+    // O(log N) Query for Non-Idempotent operations (SUM, XOR, etc.)
+    T queryNonIdempotent(int l, int r, T identity = 0) {
+        T res = identity;
+        int sz = r - l + 1;
+        for (int j = K - 1; j >= 0; j--) {
+            if ((sz >> j) & 1) {
+                res = combine(res, st[l][j]);
+                l += (1 << j);
+            }
+        }
+        return res;
+    }
+};
+
+void solve() {
+    vector<int> a = {12, 16, 24, 8, 36};
+
+    // 1. Sparse Table للـ GCD
+    auto gcd_op = [](int x, int y) { return std::__gcd(x, y); };
+    SparseTable st_gcd(a, gcd_op);
+
+    // 2. Sparse Table للـ Bitwise AND
+    auto and_op = [](int x, int y) { return x & y; };
+    SparseTable st_and(a, and_op);
+
+    // الاستعلامات O(1)
+    cout << "GCD [1, 3]: " << st_gcd.query(1, 3) << "\n"; // GCD(16, 24, 8) = 8
+    cout << "AND [0, 2]: " << st_and.query(0, 2) << "\n"; // 12 & 16 & 24
+}
+
+signed main() {
+    ios::sync_with_stdio(false);
+    cin.tie(NULL);
+
+    int t = 1;
+    while (t--) {
+        solve();
+    }
+    return 0;
 }
