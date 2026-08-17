@@ -155,3 +155,62 @@ int main() {
 
     return 0;
 }
+
+---------------------------------------------------------------
+====================================================================
+                    SEGMENT TREE - MERGE تغيير 
+====================================================================
+
+
+- لتغيير الـ operation في الـ Segment Tree نغير:
+
+  1) merge()  → طريقة دمج الـ Left + Right.
+
+  2) skip     → Identity Element للـ operation.
+
+- skip بنرجعه في حالة No Overlap.
+- لازم الـ merge تكون Associative:
+  (A op B) op C = A op (B op C).
+
+
+
+// Operation      skip        merge
+
+// SUM             0          a + b
+// MAX            -INF        max(a,b)
+// MIN            +INF        min(a,b)
+// PRODUCT         1          a * b
+// GCD             0          gcd(a,b)
+// LCM             1          lcm(a,b)
+// XOR             0          a ^ b
+// OR              0          a | b
+// AND            ~0LL        a & b
+
+
+/*
+أمثلة:
+
+// MAX
+T skip = LLONG_MIN;
+T merge(T a, T b) { return max(a,b); }
+
+// SUM
+T skip = 0;
+T merge(T a, T b) { return a+b; }
+
+// GCD
+T skip = 0;
+T merge(T a, T b) { return gcd(a,b); }
+
+// XOR
+T skip = 0;
+T merge(T a, T b) { return a^b; }
+
+
+Complex Operations:
+- لو الـ Node محتاج أكتر من معلومة → استخدم struct.
+- أمثلة:
+  1) Maximum + Frequency
+  2) Maximum Subarray Sum
+- وقتها merge() تدمج الـ structs، وskip يكون Identity مناسب للـ struct.
+*/
