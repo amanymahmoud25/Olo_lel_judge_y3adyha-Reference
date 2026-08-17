@@ -1,26 +1,35 @@
-// ==================== SEGMENT TREE ====================
-// Point Update & Range Query (Min/Max/Sum/GCD)
-// Time: O(log N) per operation | Space: O(N)
-// WARNING: 0-based indexing for range [0, n-1]
+*****  Recursive Segment Tree
 
 #include <vector>
 #include <algorithm>
 #include <climits>
+#include <iostream>
 
 using namespace std;
 
-struct SegmentTree {
+template <typename T>
+struct RecursiveSegTree {
 private:
-    vector<int> seg;
+    vector<T> seg;
     int sz;
-    int skip = INT_MAX; // Neutral element: INT_MAX for min, INT_MIN for max, 0 for sum
+    T skip; // Neutral element
 
-    // Merge function (Change based on problem: min, max, sum, gcd)
-    int merge(int a, int b) {
-        return min(a, b);
+    T merge(T a, T b) {
+        return min(a, b); // غير هذه الدالة حسب المسألة (min, max, sum, gcd)
     }
 
-    void update(int l, int r, int node, int idx, int val) {
+    void build(const vector<T>& a, int l, int r, int node) {
+        if (l == r) {
+            if (l < a.size()) seg[node] = a[l];
+            return;
+        }
+        int mid = (l + r) >> 1;
+        build(a, l, mid, 2 * node + 1);
+        build(a, mid + 1, r, 2 * node + 2);
+        seg[node] = merge(seg[2 * node + 1], seg[2 * node + 2]);
+    }
+
+    void update(int l, int r, int node, int idx, T val) {
         if (l == r) {
             seg[node] = val;
             return;
@@ -34,31 +43,115 @@ private:
         seg[node] = merge(seg[2 * node + 1], seg[2 * node + 2]);
     }
 
-    int query(int l, int r, int node, int lx, int rx) {
+    T query(int l, int r, int node, int lx, int rx) {
         if (l > rx || r < lx) return skip;      // No overlap
         if (l >= lx && r <= rx) return seg[node]; // Total overlap
         
         int mid = (l + r) >> 1;                 // Partial overlap
-        int a = query(l, mid, 2 * node + 1, lx, rx);
-        int b = query(mid + 1, r, 2 * node + 2, lx, rx);
+        T a = query(l, mid, 2 * node + 1, lx, rx);
+        T b = query(mid + 1, r, 2 * node + 2, lx, rx);
         return merge(a, b);
     }
 
 public:
-    // Initialize tree size to next power of 2
-    SegmentTree(int n) {
+    RecursiveSegTree(int n, T skip_val = INT_MAX) {
+        skip = skip_val;
         sz = 1;
         while (sz < n) sz <<= 1;
-        seg = vector<int>(sz << 1, skip);
+        seg.assign(sz << 1, skip);
     }
 
-    // Public Point Update interface: set array[idx] = val
-    void update(int idx, int val) {
+    void build(const vector<T>& a) {
+        build(a, 0, sz - 1, 0);
+    }
+
+    void update(int idx, T val) {
         update(0, sz - 1, 0, idx, val);
     }
 
-    // Public Range Query interface: query range [l, r]
-    int query(int l, int r) {
+    T query(int l, int r) {
         return query(0, sz - 1, 0, l, r);
     }
 };
+
+
+
+    امثله للاستخدام :-
+
+    vector<long long> a = {5, 2, 8, 1, 9, 3, 7, 4};
+    int n = a.size();
+
+    // 1. استخدام القالب الأول (Recursive)
+    // نمرر الحجم، والقيمة المحايدة (INT_MAX للمينيمم)
+    RecursiveSegTree<long long> recTree(n, 1e18); 
+    recTree.build(a); // بناء الشجرة في O(N)
+
+    cout << "Recursive Tree:" << endl;
+    cout << "Min from index 1 to 4: " << recTree.query(1, 4) << endl; // النطاق [2, 8, 1, 9] -> الناتج 1
+    
+    recTree.update(3, 10); // تعديل العنصر في الإندكس 3 من (1) إلى (10)
+    cout << "Min from index 1 to 4 after update: " << recTree.query(1, 4) << endl; // النطاق [2, 8, 10, 9] -> الناتج 2
+
+
+    
+----------------------------------------------------------------
+
+*****  Iterative Segment Tree 
+
+
+template <typename T>
+struct IterativeSegTree {
+    int n;
+    vector<T> tree;
+    T skip;
+
+    T merge(T a, T b) {
+        return min(a, b); // غير هذه الدالة حسب المسألة
+    }
+
+    IterativeSegTree(int n, T skip_val = INT_MAX) : n(n), skip(skip_val) {
+        tree.assign(2 * n, skip);
+    }
+
+    void build(const vector<T>& a) {
+        for (int i = 0; i < n; i++) tree[n + i] = a[i];
+        for (int i = n - 1; i > 0; --i) 
+            tree[i] = merge(tree[i << 1], tree[i << 1 | 1]);
+    }
+
+    void update(int pos, T value) {
+        for (tree[pos += n] = value; pos > 1; pos >>= 1)
+            tree[pos >> 1] = merge(tree[pos], tree[pos ^ 1]);
+    }
+
+    T query(int l, int r) {
+        T resL = skip, resR = skip;
+        for (l += n, r += n + 1; l < r; l >>= 1, r >>= 1) {
+            if (l & 1) resL = merge(resL, tree[l++]);
+            if (r & 1) resR = merge(tree[--r], resR);
+        }
+        return merge(resL, resR);
+    }
+};
+
+
+امثله للاستخدام :-
+
+int main() {
+    // مصفوفة ابتدائية
+    vector<long long> a = {5, 2, 8, 1, 9, 3, 7, 4};
+    int n = a.size();
+
+
+    // استخدام (Iterative)
+    IterativeSegTree<long long> iterTree(n, 1e18);
+    iterTree.build(a); // بناء الشجرة
+
+    cout << "Iterative Tree:" << endl;
+    cout << "Min from index 1 to 4: " << iterTree.query(1, 4) << endl; 
+    
+    iterTree.update(3, 10); // تعديل الإندكس 3
+    cout << "Min from index 1 to 4 after update: " << iterTree.query(1, 4) << endl; 
+
+    return 0;
+}
