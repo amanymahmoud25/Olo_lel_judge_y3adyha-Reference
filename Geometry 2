@@ -1,0 +1,491 @@
+*** 5. Distance Between Two Points — المسافة بين نقطتين
+
+بيعمل إيه؟
+- بيحسب المسافة بين نقطتين في الـ2D.
+
+أستخدمه إمتى؟
+- لما المسألة تطلب:
+    - Distance
+    - Length
+    - Radius
+    - أقرب / أبعد نقطة
+- أو لما أحتاج أقارن بين مسافات.
+
+formula
+
+d = sqrt((x2-x1)² + (y2-y1)²)
+use : 
+d² = (x2-x1)² + (y2-y1)²
+to avoid floating in compare
+
+Time: O(1)
+*/
+
+T dist(pt a, pt b) {
+    return abs(a - b);
+}
+
+T dist2(pt a, pt b) {
+    T dx = a.x - b.x;
+    T dy = a.y - b.y;
+
+    return dx * dx + dy * dy;
+}
+
+-------------------------------------------------------------------------
+
+*** 6. Dot Product — الضرب القياسي
+
+بيعمل إيه؟
+- بيقيس العلاقة بين اتجاه Vector واتجاه Vector آخر.
+- أهم استخداماته معرفة الزوايا والـPerpendicular والـProjection.
+
+أستخدمه إمتى؟
+- لما أشوف:
+    - Perpendicular
+    - 90 degrees
+    - Acute angle
+    - Obtuse angle
+    - Projection
+    - Angle between vectors
+
+القانون:
+
+A · B = Ax * Bx + Ay * By
+
+لو:
+
+A · B > 0  → الزاوية حادة
+A · B = 0  → الزاوية 90°
+A · B < 0  → الزاوية منفرجة
+
+Time: O(1)
+*/
+
+
+T dot(pt a, pt b) {
+    return a.x * b.x + a.y * b.y;
+}
+
+-------------------------------------------------------------------------
+
+*** 7. Cross Product — الضرب الاتجاهي
+
+بيعمل إيه؟
+- بيحدد اتجاه Vector بالنسبة لـVector آخر.
+- من أهم الأدوات في Geometry.
+
+أستخدمه إمتى؟
+- Orientation
+- Clockwise / Counter-Clockwise
+- Collinear
+- Parallel
+- Triangle Area
+- Convex Hull
+- Point relative to line
+
+القانون:
+
+A × B = Ax * By - Ay * Bx
+
+لو:
+
+cross > 0 → اتجاه Counter-Clockwise
+cross < 0 → اتجاه Clockwise
+cross = 0 → Parallel / Collinear
+
+Time: O(1)
+*/
+
+
+T cross(pt a, pt b) {
+    return a.x * b.y - a.y * b.x;
+}
+
+-------------------------------------------------------------------------
+
+*** 8. Orientation — اتجاه 3 نقاط
+
+بيعمل إيه؟
+- بيحدد إذا كانت 3 نقاط ماشية:
+    - Counter-Clockwise
+    - Clockwise
+    - Collinear
+
+أستخدمه إمتى؟
+لما يكون عندي 3 Points:
+
+A, B, C
+
+والسؤال عن:
+- Orientation
+- Clockwise / CCW
+- هل النقاط على خط مستقيم؟
+- هل C على يمين أو شمال AB؟
+
+الفكرة:
+
+cross(B-A, C-A)
+
+> 0  → Counter-Clockwise
+< 0  → Clockwise
+= 0  → Collinear
+
+Time: O(1)
+*/
+
+
+int orientation(pt a, pt b, pt c) {
+
+    T cr = cross(b - a, c - a);
+
+    if (cr > 0) return 1;   // CCW
+    if (cr < 0) return -1;  // CW
+
+    return 0;               // Collinear
+}
+
+-------------------------------------------------------------------------
+
+*** 9. Point On Segment — هل النقطة على Segment؟
+
+بيعمل إيه؟
+- بيتأكد إن Point P موجودة على الـSegment AB.
+
+أستخدمه إمتى؟
+- لما السؤال يقول:
+    - Is point on segment?
+    - Does point lie on segment?
+    - Point lies on a line segment
+- مهم جدًا في Segment Intersection.
+
+لازم يتحقق شرطان:
+
+1) A, B, P يكونوا Collinear:
+
+cross(B-A, P-A) = 0
+
+2) P تكون داخل الـBounding Box بتاع AB.
+
+Time: O(1)
+*/
+
+
+bool onSegment(pt a, pt b, pt p) {
+
+    // لازم يكونوا على نفس الخط
+    if (cross(b - a, p - a) != 0)
+        return false;
+
+    // لازم P تكون بين A و B
+    return min(a.x, b.x) <= p.x &&
+           p.x <= max(a.x, b.x) &&
+           min(a.y, b.y) <= p.y &&
+           p.y <= max(a.y, b.y);
+}
+
+-------------------------------------------------------------------------
+
+*** 10. Segment Intersection — تقاطع خطين مستقيمين
+
+بيعمل إيه؟
+- بيحدد هل Segment AB بيتقاطع مع Segment CD أم لا.
+
+أستخدمه إمتى؟
+- لما السؤال يقول:
+    - Do two segments intersect?
+    - Crossing segments
+    - Intersection between two segments
+    - Collision between segments
+
+الفكرة الأساسية:
+
+orientation(A,B,C)
+orientation(A,B,D)
+orientation(C,D,A)
+orientation(C,D,B)
+
+في الحالة العادية:
+
+C و D لازم يكونوا على ناحيتين مختلفتين من AB
+و
+A و B لازم يكونوا على ناحيتين مختلفتين من CD.
+
+⚠️ لازم نتعامل مع حالة الـCollinear بشكل منفصل.
+
+Time: O(1)
+*/
+
+bool segmentsIntersect(pt a, pt b, pt c, pt d) {
+
+    int o1 = orientation(a, b, c);
+    int o2 = orientation(a, b, d);
+    int o3 = orientation(c, d, a);
+    int o4 = orientation(c, d, b);
+
+    // General Case
+    if (o1 != o2 && o3 != o4)
+        return true;
+
+    // Collinear Cases
+    if (o1 == 0 && onSegment(a, b, c))
+        return true;
+
+    if (o2 == 0 && onSegment(a, b, d))
+        return true;
+
+    if (o3 == 0 && onSegment(c, d, a))
+        return true;
+
+    if (o4 == 0 && onSegment(c, d, b))
+        return true;
+
+    return false;
+}
+
+-------------------------------------------------------------------------
+
+*** 11. Projection — إسقاط نقطة على Line
+
+بيعمل إيه؟
+- بيجيب أقرب نقطة من P على الـLine AB.
+- النقطة دي اسمها Projection / Foot.
+
+أستخدمه إمتى؟
+- Point to Line Distance
+- Point to Segment Distance
+- Foot of perpendicular
+- أقرب نقطة على خط
+
+لدينا:
+
+v = B - A
+u = P - A
+
+t = (u · v) / (v · v)
+
+Projection = A + t * v
+
+⚠️ لو عايز Projection على Segment:
+لازم بعد كده تتأكد إن:
+
+0 <= t <= 1
+
+Time: O(1)
+*/
+
+
+pt projection(pt a, pt b, pt p) {
+
+    pt v = b - a;
+
+    T t = dot(p - a, v) / dot(v, v);
+
+    return a + t * v;
+}
+
+-------------------------------------------------------------------------
+
+*** 12. Point → Line Distance — المسافة من Point إلى Line
+
+بيعمل إيه؟
+- بيحسب أقصر مسافة بين Point وخط لا نهائي.
+
+أستخدمه إمتى؟
+- Distance from point to line
+- أقصر مسافة من نقطة إلى خط
+- Perpendicular distance
+
+لو الخط:
+
+Ax + By + C = 0
+
+والنقطة:
+
+(x0, y0)
+
+القانون:
+
+distance =
+|A*x0 + B*y0 + C|
+-------------------
+sqrt(A² + B²)
+
+Time: O(1)
+*/
+
+
+T pointLineDistance(
+    T A,
+    T B,
+    T C,
+    pt p
+) {
+    return abs(A * p.x + B * p.y + C)
+           / sqrt(A * A + B * B);
+}
+
+-------------------------------------------------------------------------
+
+*** 13. Point → Segment Distance — المسافة من Point إلى Segment
+
+بيعمل إيه؟
+- بيحسب أقصر مسافة بين Point P وSegment AB.
+
+أستخدمه إمتى؟
+- Minimum distance from point to segment
+- Closest point on segment
+- Distance between point and segment
+
+الفكرة:
+
+1) نحسب Projection parameter:
+
+t = ((P-A) · (B-A)) / |B-A|²
+
+2) لو:
+
+t < 0
+→ أقرب نقطة هي A
+
+t > 1
+→ أقرب نقطة هي B
+
+0 <= t <= 1
+→ أقرب نقطة هي Projection
+
+Time: O(1)
+*/
+
+
+T pointSegmentDistance(
+    pt a,
+    pt b,
+    pt p
+) {
+    pt v = b - a;
+
+    T t = dot(p - a, v) / dot(v, v);
+
+    if (t < 0)
+        return dist(p, a);
+
+    if (t > 1)
+        return dist(p, b);
+
+    pt proj = a + t * v;
+
+    return dist(p, proj);
+}
+
+-------------------------------------------------------------------------
+
+*** 14. Line Intersection — تقاطع خطين
+
+بيعمل إيه؟
+- بيجيب نقطة تقاطع خطين.
+
+أستخدمه إمتى؟
+- Intersection of two lines
+- تقاطع Diagonals
+- تقاطع خطوط هندسية
+- Finding intersection point
+
+نمثل الخط:
+
+L1 = A + t * v
+
+L2 = B + s * u
+
+لو:
+
+cross(v, u) = 0
+
+→ الخطين Parallel
+→ مفيش Intersection واحدة محددة.
+
+غير كده نقدر نجيب t:
+
+t = cross(B-A, u) / cross(v, u)
+
+ثم:
+
+Intersection = A + t*v
+
+Time: O(1)
+*/
+
+
+pt lineIntersection(
+    pt a,
+    pt b,
+    pt c,
+    pt d
+) {
+    pt v = b - a;
+    pt u = d - c;
+
+    T t = cross(c - a, u) / cross(v, u);
+
+    return a + t * v;
+}
+
+-------------------------------------------------------------------------
+
+*** 15. Circle-Circle Intersection — تقاطع دائرتين
+
+بيعمل إيه؟
+- بيحدد عدد نقاط التقاطع بين دائرتين.
+
+أستخدمه إمتى؟
+- لما يكون عندي:
+    Circle 1: center C1, radius r1
+    Circle 2: center C2, radius r2
+
+احسب:
+
+d = distance(C1, C2)
+
+ثم:
+
+d > r1+r2
+→ لا يوجد تقاطع
+
+d < |r1-r2|
+→ دائرة داخل الأخرى بدون تقاطع
+
+d = r1+r2
+→ Tangent خارجي
+→ نقطة واحدة
+
+d = |r1-r2|
+→ Tangent داخلي
+→ نقطة واحدة
+
+|r1-r2| < d < r1+r2
+→ نقطتان
+
+Time: O(1)
+*/
+
+
+int circleRelation(
+    pt c1,
+    T r1,
+    pt c2,
+    T r2
+) {
+    T d = dist(c1, c2);
+
+    if (d > r1 + r2)
+        return 0; // No intersection
+
+    if (d < abs(r1 - r2))
+        return 0; // One inside another
+
+    if (d == r1 + r2 ||
+        d == abs(r1 - r2))
+        return 1; // Tangent
+
+    return 2;     // Two intersections
+}
