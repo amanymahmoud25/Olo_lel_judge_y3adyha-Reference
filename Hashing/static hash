@@ -1,0 +1,98 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+#define ll long long
+
+/*
+================================================================================
+1. STATIC PREFIX & SUFFIX HASHING TEMPLATE
+================================================================================
+[OVERVIEW & CONCEPT]:
+Uses precomputed prefix (`pre`) and suffix (`suf`) arrays to process queries on 
+a STATIC STRING (no insertions or deletions).
+
+[WHEN TO USE]:
+- Querying hash of any range [L...R] on a fixed string in O(1).
+- Checking if a substring [L...R] is a Palindrome in O(1).
+- String matching / Pattern searching (Rabin-Karp) on static texts.
+
+[COMPLEXITY]:
+- Time:  Precomputation/Build: O(N) | Range Query [L...R]: O(1) | Palindrome Check: O(1)
+- Space: O(N) for prefix, suffix, and power arrays.
+================================================================================
+*/
+
+namespace StaticHashing {
+    const int N = 1e6 + 5;
+
+    // Base values and safe prime modulos to avoid collisions and overflow
+    const int base1 = 127, base2 = 131;
+    const int mod1 = 1e9 + 7, mod2 = 1e9 + 9; 
+
+    int n;
+    int pw1[N], pw2[N];
+    pair<int, int> pre[N], suf[N];
+
+    // Precompute powers of bases in O(N)
+    void initHash() {
+        pw1[0] = pw2[0] = 1;
+        for (int i = 1; i < N; i++) {
+            pw1[i] = (1LL * pw1[i - 1] * base1) % mod1;
+            pw2[i] = (1LL * pw2[i - 1] * base2) % mod2;
+        }
+    }
+
+    // Build prefix hash array in O(N)
+    void buildHash(const string& s, pair<int, int> arr[]) {
+        int a = 0, b = 0;
+        for (int i = 0; i < s.size(); i++) {
+            a = (1LL * a * base1 + s[i]) % mod1;
+            b = (1LL * b * base2 + s[i]) % mod2;
+            arr[i] = {a, b};
+        }
+    }
+
+    // Query substring hash for range [L...R] in O(1) - (0-indexed)
+    pair<int, int> getHash(int l, int r, pair<int, int> arr[]) {
+        auto ret = arr[r];
+        int sz = r - l + 1;
+        l--;
+        if (l >= 0) {
+            ret.first = (ret.first - (1LL * arr[l].first * pw1[sz]) % mod1 + mod1) % mod1;
+            ret.second = (ret.second - (1LL * arr[l].second * pw2[sz]) % mod2 + mod2) % mod2;
+        }
+        return ret;
+    }
+
+    // Check if substring [L...R] is a palindrome in O(1)
+    bool isPalindrome(int l, int r) {
+        return getHash(l, r, pre) == getHash(n - r - 1, n - l - 1, suf);
+    }
+
+    // Example Usage for Reference Template
+    void exampleUsage() {
+        initHash(); // MUST call once in main
+        
+        string s = "radarcat";
+        n = s.size();
+
+        // Build forward and reverse hashes
+        buildHash(s, pre);
+        
+        string rev_s = s;
+        reverse(rev_s.begin(), rev_s.end());
+        buildHash(rev_s, suf);
+
+        // 1. Get substring hash for "radar" [0...4]
+        pair<int, int> sub_hash = getHash(0, 4, pre);
+
+        // 2. Check Palindrome for "radar" [0...4] -> returns true
+        if (isPalindrome(0, 4)) {
+            // Substring [0...4] is a Palindrome
+        }
+    }
+}
+
+
+/*
+================================================================================
