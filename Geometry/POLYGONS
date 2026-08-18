@@ -1,0 +1,73 @@
+/*
+================================================================================
+SECTION 6.6: POLYGONS
+================================================================================
+Overview:
+Advanced polygon operations including Shoelace Area formula, Convex Hull generation
+using Andrew's Monotone Chain (O(N log N)), Point-in-Polygon checks, and Centroids.
+*/
+
+// 6.6.3 Convex Hull (Andrew's Monotone Chain Algorithm - O(N log N))
+vector<Point> convexHull(vector<Point>& pts) {
+    int n = pts.size(), k = 0;
+    if (n <= 3) return pts;
+    vector<Point> h(2 * n);
+    sort(pts.begin(), pts.end(), [](const Point& a, const Point& b) {
+        return a.x < b.x || (dcmp(a.x, b.x) == 0 && a.y < b.y);
+    });
+
+    // Lower hull
+    for (int i = 0; i < n; ++i) {
+        while (k >= 2 && ccw(h[k-2], h[k-1], pts[i]) <= 0) k--;
+        h[k++] = pts[i];
+    }
+    // Upper hull
+    for (int i = n - 2, t = k + 1; i >= 0; i--) {
+        while (k >= t && ccw(h[k-2], h[k-1], pts[i]) <= 0) k--;
+        h[k++] = pts[i];
+    }
+    h.resize(k - 1);
+    return h;
+}
+
+// 6.6.10 Polygon Area (Shoelace Formula)
+double polygonArea(const vector<Point>& poly) {
+    double area = 0;
+    int n = poly.size();
+    for (int i = 0; i < n; i++) {
+        area += poly[i].cross(poly[(i + 1) % n]);
+    }
+    return fabs(area) / 2.0;
+}
+
+// 6.6.13 Is Inside Poly (Ray Casting Algorithm for General Non-Convex Polygons - O(N))
+bool isInsidePolygon(Point p, const vector<Point>& poly) {
+    bool inside = false;
+    int n = poly.size();
+    for (int i = 0, j = n - 1; i < n; j = i++) {
+        if (((poly[i].y > p.y) != (poly[j].y > p.y)) &&
+            (p.x < (poly[j].x - poly[i].x) * (p.y - poly[i].y) / (poly[j].y - poly[i].y) + poly[i].x)) {
+            inside = !inside;
+        }
+    }
+    return inside;
+}
+
+// 6.6.11 Polygon Centroid
+Point polygonCentroid(const vector<Point>& poly) {
+    Point c(0, 0);
+    double area = 0;
+    int n = poly.size();
+    for (int i = 0; i < n; i++) {
+        Point p1 = poly[i], p2 = poly[(i + 1) % n];
+        double cross = p1.cross(p2);
+        area += cross;
+        c = c + (p1 + p2) * cross;
+    }
+    return c / (3.0 * area);
+}
+
+int main() {
+    // Template entry point
+    return 0;
+}
