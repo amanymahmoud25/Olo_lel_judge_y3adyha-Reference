@@ -42,4 +42,23 @@ memset      Array	0 أو -1 فقط         	❌
 fill	      Array + Vector	أي قيمة	    ❌
 assign    	Vector فقط	أي قيمة	          ✅
 
+memset(vec.data(), 0, vec.size() * sizeof(int));
 
+------------------------------------------------------------------------
+# Erase from Vector with lambda Function 
+ This way in only C++ 20
+
+erase_if(paths , [&](string ss){
+        return condition;
+});
+
+ This way in C++ 17 and 20 
+
+ الشرط لما يكون 1 يبقي هيتحذف
+paths.erase(
+    remove_if(paths.begin(), paths.end(),
+        [&](string ss){
+            return condition;
+        }),
+    paths.end()
+);
