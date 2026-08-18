@@ -1,0 +1,128 @@
+2. DYNAMIC SLIDING WINDOW HASHING STRUCT
+================================================================================
+[OVERVIEW & CONCEPT]:
+Encapsulates a `std::deque` to maintain the hash value of a DYNAMICALLY 
+CHANGING STRING / active window from both endpoints.
+
+[WHEN TO USE]:
+- Sliding Window problems (fixed or variable window length).
+- Interactive problems or streams requiring insertion/deletion at endpoints
+  (`push_back`, `push_front`, `pop_back`, `pop_front`).
+- Real-time active window hash comparisons in O(1).
+
+[COMPLEXITY]:
+- Time:  Initialization: O(N) | Push/Pop (Front/Back): O(1) | Comparison (`==`): O(1)
+- Space: O(N) for powers and internal `deque` storage.
+================================================================================
+*/
+
+struct DynamicHash {
+private:
+    int mod1 = 1e9 + 7, mod2 = 1e9 + 9; // Prime modulos for Modular Inverse (Fermat's Little Theorem)
+    ll base1, base2, h1, h2, inv1, inv2, len;
+    vector<ll> pw1, pw2;
+    deque<char> d;
+
+    // Binary exponentiation for Modular Inverse calculation O(log MOD)
+    ll power(ll a, ll b, ll m) {
+        ll ans = 1;
+        while (b > 0) {
+            if (b & 1) ans = (ans * a) % m;
+            a = (a * a) % m;
+            b >>= 1;
+        }
+        return ans;
+    }
+
+public:
+    DynamicHash(int sz, ll x = 31, ll y = 37) {
+        base1 = x; base2 = y;
+        h1 = h2 = len = 0;
+        inv1 = power(x, mod1 - 2, mod1);
+        inv2 = power(y, mod2 - 2, mod2);
+
+        pw1.resize(sz + 1); pw2.resize(sz + 1);
+        pw1[0] = pw2[0] = 1;
+        for (int i = 1; i <= sz; i++) {
+            pw1[i] = (x * pw1[i - 1]) % mod1;
+            pw2[i] = (y * pw2[i - 1]) % mod2;
+        }
+    }
+
+    void push_back(char c) {
+        int x = c - 'a' + 1;
+        h1 = (h1 * base1 + x) % mod1;
+        h2 = (h2 * base2 + x) % mod2;
+        len++;
+        d.push_back(c);
+    }
+
+    void push_front(char c) {
+        int x = c - 'a' + 1;
+        h1 = (h1 + x * pw1[len]) % mod1;
+        h2 = (h2 + x * pw2[len]) % mod2;
+        len++;
+        d.push_front(c);
+    }
+
+    void pop_back() {
+        if (len == 0) return;
+        int x = d.back() - 'a' + 1;
+        d.pop_back();
+        h1 = (h1 - x + mod1) % mod1;
+        h1 = (h1 * inv1) % mod1;
+        h2 = (h2 - x + mod2) % mod2;
+        h2 = (h2 * inv2) % mod2;
+        len--;
+    }
+
+    void pop_front() {
+        if (len == 0) return;
+        int x = d.front() - 'a' + 1;
+        d.pop_front();
+        len--;
+        h1 = (h1 - (x * pw1[len]) % mod1 + mod1) % mod1;
+        h2 = (h2 - (x * pw2[len]) % mod2 + mod2) % mod2;
+    }
+
+    pair<int, int> getHash() const { return {h1, h2}; }
+    int size() const { return len; }
+    
+    bool operator==(const DynamicHash& H) const {
+        return h1 == H.h1 && h2 == H.h2;
+    }
+};
+
+// Example Usage for Reference Template
+void dynamicHashExampleUsage() {
+    // Initialize with maximum expected window length
+    DynamicHash H(1000); 
+
+    // 1. Build string "abc"
+    H.push_back('a');
+    H.push_back('b');
+    H.push_back('c');
+
+    // 2. Add 'z' to front -> String becomes "zabc"
+    H.push_front('z');
+
+    // 3. Pop back -> String becomes "zab"
+    H.pop_back();
+
+    // 4. Get active window hash in O(1)
+    pair<int, int> current_hash = H.getHash();
+
+    // 5. Compare against another instance in O(1)
+    DynamicHash H2(1000);
+    H2.push_back('z'); H2.push_back('a'); H2.push_back('b');
+
+    if (H == H2) {
+        // Dynamic windows match
+    }
+}
+
+int main() {
+    ios_base::sync_with_stdio(0); 
+    cin.tie(0);
+    return 0;
+}
