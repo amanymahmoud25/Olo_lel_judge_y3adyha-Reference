@@ -196,4 +196,10 @@ A -1 = 71 = 1000111 ( remove first bit 1 and make all bits before it with 1 )
 A & (A-1) = 10000000 remove first bit from right
 A & ~(A-1) Isolating the least significant bit (اول بت ب 1)
 
+-------------------------------------------------------------------------
 
+if you want to maxmize the XOR change th bigers bits
+
+when you subtruct b from a (a - b)
+        in when a[i] = 1 and b[i] = 0 then the diffrence will be great
+           when a[i] = 0 and b[i] = 1 then the diggrence will be small
